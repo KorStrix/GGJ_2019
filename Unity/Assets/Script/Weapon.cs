@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum WeaponType { knife}
+public enum WeaponType { fist, melee, handgun, rifle}
 public class Weapon : MonoBehaviour {
     /// <summary>
     /// 무기의 이름
@@ -30,9 +30,9 @@ public class Weapon : MonoBehaviour {
     public float Cooltime;
 
     /// <summary>
-    /// 남은 탄알 수(-1은 무한)
+    /// 무기의 명중률
     /// </summary>
-    public int Ammo;
+    public float Accuracy;
 
 
 }
