@@ -24,6 +24,7 @@ public class Holdable : MonoBehaviour {
         transform.parent = character;
         transform.localPosition = Vector3.zero;
         GetComponent<Renderer>().SetActive(false);
+        GetComponent<Collider>().SetActive(false);
         isHeld = true;
     }
 
@@ -34,5 +35,6 @@ public class Holdable : MonoBehaviour {
         transform.SetParent(null, true);
         isHeld = false;
         GetComponent<Renderer>().SetActive(true);
+        GetComponent<Collider>().SetActive(true);
     }
 }
