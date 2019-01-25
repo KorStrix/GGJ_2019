@@ -5,8 +5,8 @@ using UnityEditor;
 
 
 
-public class DeltaStat : ScriptableObject {
-    public StatType stats;
-    public float value;
+public class DeltaStat {
+    public StatType Type;
+    public float Value;
 	
 }
