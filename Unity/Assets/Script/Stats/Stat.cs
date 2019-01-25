@@ -176,6 +176,14 @@ public class Stat
         _multiBuff.Clear();
     }
 
+    public void ClearWeapon()
+    {
+        RemoveAddItemBuff(BuffType.WEAPON);
+        RemoveAddBuff(BuffType.WEAPON);
+        RemoveMultiItemBuff(BuffType.WEAPON);
+        RemoveMultiBuff(BuffType.WEAPON);
+    }
+
     public virtual int StatClipper()
     {
         int v = _value;

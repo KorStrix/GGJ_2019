@@ -12,13 +12,40 @@ public class CharacterModel : MonoBehaviour {
         public float speedX, speedZ;
     }
 
-    public BasicStats basics;
-    public SecondStats seconds;
-    public StatEffects effects;
+    public BasicStats basics {get; private set;} = new BasicStats();
+    public SecondStats seconds {get; private set;} = new SecondStats();
+
+    public Weapon myWeapon;
+    public Armor myArmor;
+    public Jewel myJewel;
 
     public void Awake()
     {
-        
+        PlayerItemCollector.EventOnGetWeapon += GetWeapon;
+        PlayerItemCollector.EventOnGetArmor += GetArmor;
+        PlayerItemCollector.EventOnGetJewel += GetJewel;
+    }
+
+    public void GetWeapon(Weapon weapon)
+    {
+        if (myWeapon != null)
+        {
+            basics.health.ClearWeapon();
+            basics.strength.ClearWeapon();
+            basics.dexterity.ClearWeapon();
+            basics.speed.ClearWeapon();
+            basics.luck.ClearWeapon();
+        }
+    }
+
+    public void GetArmor(Armor armor)
+    {
+
+    }
+
+    public virtual GetJewel(Jewel jewel)
+    {
+        //
     }
 
     public void StatsUpdate()
