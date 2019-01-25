@@ -1,0 +1,48 @@
+﻿using UnityEngine;
+using System.Collections;
+
+#if UNITY_2017
+#if UNITY_EDITOR
+using NUnit.Framework;
+using UnityEngine.TestTools;
+
+[Category("StrixLibrary")]
+public class CObjectBase_테스트 : CObjectBase
+{
+    [GetComponent]
+    [HideInInspector]
+    public CObjectBase pGetComponent;
+
+    [GetComponentInParent]
+    [HideInInspector]
+    public CObjectBase pGetComponentParents;
+
+    [UnityTest]
+    public IEnumerator Test_ObjectBase_GetComponent_Attribute()
+    {
+        GameObject pObjectNew = new GameObject();
+        CObjectBase_테스트 pTarget = pObjectNew.AddComponent<CObjectBase_테스트>();
+        pTarget.EventOnAwake();
+
+        yield return null;
+
+        Assert.IsNotNull(pTarget.pGetComponent);
+    }
+
+    [UnityTest]
+    public IEnumerator Test_ObjectBase_GetComponentInChildren_Attribute()
+    {
+        GameObject pObjectNew = new GameObject();
+        CObjectBase_테스트 pTargetParents = pObjectNew.AddComponent<CObjectBase_테스트>();
+
+        CObjectBase_테스트 pTarget = pObjectNew.AddComponent<CObjectBase_테스트>();
+        pTarget.transform.SetParent(pTargetParents.transform);
+        pTarget.EventOnAwake();
+
+        yield return null;
+
+        Assert.IsNotNull(pTarget.pGetComponentParents);
+    }
+}
+#endif
+#endif

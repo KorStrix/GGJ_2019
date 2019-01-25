@@ -1,0 +1,90 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class CShakeObject : CObjectBase
+{
+    public enum EShakePos
+    {
+        All,
+        X,
+        XY,
+        XZ,
+        Y,
+        YZ,
+        Z
+    }
+
+    [SerializeField]
+    private EShakePos _eShakePosType = EShakePos.All;
+    [SerializeField]
+    private float _fDefaultShakePow = 1f;
+    [SerializeField]
+    private float _fShakeMinusDelta = 0.1f;
+	//[SerializeField]
+	//private bool _bMachineShaking = false;
+
+	private Vector3 _vecOriginPos;
+    private float _fRemainShakePow;
+
+    Coroutine _pCoroutine;
+
+	// ========================== [ Division ] ========================== //
+
+	public void DoSetShakeOnMobileShake(bool bEnable)
+	{
+		//_bMachineShaking = bEnable;
+	}
+
+#if ODIN_INSPECTOR
+    [Sirenix.OdinInspector.Button("Test Shake")]
+#endif
+    public void DoShakeObject()
+    {
+        _fRemainShakePow = _fDefaultShakePow;
+
+        if (_pCoroutine != null)
+            StopCoroutine(_pCoroutine);
+        _pCoroutine = StartCoroutine(CoStartShake());
+	}
+
+	public void DoShakeObject(float fShakePow)
+    {
+        transform.localPosition = _vecOriginPos;
+        _fRemainShakePow = fShakePow;
+
+        if (_pCoroutine != null)
+            StopCoroutine(_pCoroutine);
+        _pCoroutine = StartCoroutine(CoStartShake());
+    }
+
+    // ========================== [ Division ] ========================== //
+
+    private IEnumerator CoStartShake()
+    {
+        _vecOriginPos = transform.localPosition;
+        while (_fRemainShakePow > 0f)
+        {
+            Vector3 vecShakePos = PrimitiveHelper.RandomRange(_vecOriginPos.AddFloat(-_fRemainShakePow), _vecOriginPos.AddFloat(_fRemainShakePow));
+            if(_eShakePosType != EShakePos.All)
+            {
+                if (_eShakePosType == EShakePos.Y || _eShakePosType == EShakePos.YZ || _eShakePosType == EShakePos.Z)
+                    vecShakePos.x = _vecOriginPos.x;
+
+                if (_eShakePosType == EShakePos.X || _eShakePosType == EShakePos.XZ|| _eShakePosType == EShakePos.Z)
+                    vecShakePos.y = _vecOriginPos.y;
+
+                if (_eShakePosType == EShakePos.X || _eShakePosType == EShakePos.XY || _eShakePosType == EShakePos.Y)
+                    vecShakePos.z = _vecOriginPos.z;
+            }
+
+            transform.localPosition = vecShakePos;
+            _fRemainShakePow -= _fShakeMinusDelta;
+
+            yield return null;
+        }
+
+        transform.localPosition = _vecOriginPos;
+
+        yield break;
+    }
+}

@@ -1,0 +1,421 @@
+﻿#region Header
+/* ============================================ 
+ *			    Strix Unity Library
+ *		https://github.com/strix13/UnityLibrary
+ *	============================================
+ *	작성자 : Strix
+ *	작성일 : 2018-04-26 오후 3:12:39
+ *	기능 : 
+ *	
+ *	패킷 생성은 하단 링크의 구조체 마샬링 부분과 Test 코드 참조
+ *	https://docs.microsoft.com/ko-kr/dotnet/framework/interop/marshaling-classes-structures-and-unions
+   ============================================ */
+/// <see cref="네트워크_UDP_테스트.SPacketTest_Struct">
+
+#endregion Header
+
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Threading;
+using System.Net;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Runtime.InteropServices;
+using UnityEngine.Events;
+using System;
+
+public interface INetworkPacketHeader
+{
+    int INetworkPacketHeader_Get_Payload();
+    void INetworkPacketHeader_Set_Header(int iPayload, int iPacketType);
+}
+
+public interface INetworkPacket
+{
+    int INetworkPacket_Get_PacketID();
+}
+
+public class CNetworkSession : IDictionaryItem<string>
+{
+    public string strIP;
+    public ENetworkConnectionState p_eConnectionState { get; private set; }
+
+    private System.Action<CNetworkSession, ENetworkConnectionState> _OnConnectionStateChange;
+    private DateTime _pLastSucessConnectionTime;
+
+    public void DoInitSession(string strIP, System.Action<CNetworkSession, ENetworkConnectionState> OnConnectionStateChange)
+    {
+        this.strIP = strIP;
+        _OnConnectionStateChange = OnConnectionStateChange;
+
+        // 이벤트 호출을 위해 강제로 세팅
+        p_eConnectionState = ENetworkConnectionState.연결끊김;
+        DoChangeConnectionState(ENetworkConnectionState.새로접속);
+    }
+
+    public void DoChangeConnectionState(ENetworkConnectionState eConnectionState)
+    {
+        if (p_eConnectionState != eConnectionState)
+            _OnConnectionStateChange(this, eConnectionState);
+
+        p_eConnectionState = eConnectionState;
+    }
+
+    public int GetLastConnectionTimeGap(ref DateTime pDateTime)
+    {
+        return (_pLastSucessConnectionTime - pDateTime).Seconds * -1;
+    }
+
+    public void UpdateConnectionTime()
+    {
+        DoChangeConnectionState(ENetworkConnectionState.연결중);
+        _pLastSucessConnectionTime = DateTime.Now;
+    }
+
+    public string IDictionaryItem_GetKey()
+    {
+        return strIP;
+    }
+}
+
+public enum ENetworkConnectionState
+{
+    새로접속,
+    연결중,
+    연결잠시끊김,
+    연결끊김,
+}
+
+[RequireComponent(typeof(CCompoDontDestroyObj))]
+abstract public class CManagerNetworkUDPBase<Class_Derived, Class_SessionDerived, Packet_Header> : CSingletonDynamicMonoBase<Class_Derived>
+    where Class_Derived : CManagerNetworkUDPBase<Class_Derived, Class_SessionDerived, Packet_Header>, new()
+    where Class_SessionDerived : CNetworkSession, new()
+    where Packet_Header : INetworkPacketHeader
+{
+    /* const & readonly declaration             */
+
+    /* enum & struct declaration                */
+
+    /// <summary>
+    /// 유니티 함수는 유니티 쓰레드에서만 동작하기 때문에,
+    /// 리시브 쓰레드에서 받은 리시브 데이터를 유니티 쓰레드로 넘겨야 한다.
+    /// </summary>
+    public struct InnerThread_To_ThreadMessage
+    {
+        public IPEndPoint pRecieveIP { get; private set; }
+        public byte[] arrRecieveData { get; private set; }
+
+        public InnerThread_To_ThreadMessage(IPEndPoint pRecieveIP, byte[] arrRecieveData)
+        {
+            this.pRecieveIP = pRecieveIP;
+            this.arrRecieveData = arrRecieveData;
+        }
+    }
+
+    /* public - Field declaration            */
+
+    public delegate void OnChange_SesionConnection(Class_SessionDerived pSession, ENetworkConnectionState eState);
+    public event OnChange_SesionConnection p_Event_OnChange_SessionConnection;
+
+    public Dictionary<string, Class_SessionDerived> p_mapNetworkSession { get; protected set; }
+
+    /* protected & private - Field declaration         */
+
+    protected CircularBuffer<byte> _pRecvBuffer = new CircularBuffer<byte>(10240);
+
+    List<Class_SessionDerived> _listSessionTemp = new List<Class_SessionDerived>();
+    Queue<InnerThread_To_ThreadMessage> _pQueueRecieveThreadMessage = new Queue<InnerThread_To_ThreadMessage>();
+
+    UdpClient _pClientUDP_Recv;
+    UdpClient _pClientUDP_Send = new UdpClient();
+
+    Thread _ThreadReceive;
+    bool _bIsListen;
+
+    int _iTimeOutSecond;
+    int _iTimeDeleteSessionSecond;
+    int _iPacketHeaderSize = SCByteHelper.SizeOf<Packet_Header>();
+
+    int _iPort;
+
+    // ========================================================================== //
+
+    /* public - [Do] Function
+     * 외부 객체가 호출(For External class call)*/
+
+    public void DoSendPacket_BroadCast<Packet>(int iPort, Packet pPacket)
+    {
+        IPEndPoint pSendIP = new IPEndPoint(IPAddress.Broadcast, iPort);
+        byte[] arrData = SCByteHelper.ConvertByteArray(pPacket);
+
+        _pClientUDP_Send.Send(arrData, arrData.Length, pSendIP);
+    }
+
+    public void DoSendPacket_IncludeHeader_BroadCast<Packet>(int iPort, Packet_Header pPacketHeader, Packet pPacket)
+        where Packet : INetworkPacket
+    {
+        IPEndPoint pSendIP = new IPEndPoint(IPAddress.Broadcast, iPort);
+
+        pPacketHeader.INetworkPacketHeader_Set_Header(SCByteHelper.SizeOf<Packet>(), pPacket.INetworkPacket_Get_PacketID());
+        byte[] arrDataHeader = SCByteHelper.ConvertByteArray(pPacketHeader);
+        byte[] arrData = SCByteHelper.ConvertByteArray(pPacket);
+
+        _pClientUDP_Send.Send(arrDataHeader, arrDataHeader.Length, pSendIP);
+        _pClientUDP_Send.Send(arrData, arrData.Length, pSendIP);
+    }
+
+    public void DoSendPacket<Packet>(string strIP, int iPort, Packet pPacket)
+    {
+        IPEndPoint pSendIP = new IPEndPoint(IPAddress.Parse(strIP), iPort);
+        byte[] arrData = SCByteHelper.ConvertByteArray(pPacket);
+
+        _pClientUDP_Send.Send(arrData, arrData.Length, pSendIP);
+    }
+
+    public void DoSendPacket<Packet>(int iPort, Packet pPacket, params Class_SessionDerived[] arrSession)
+    {
+        byte[] arrData = SCByteHelper.ConvertByteArray(pPacket);
+        for (int i = 0; i < arrSession.Length; i++)
+        {
+            IPEndPoint pSendIP = new IPEndPoint(IPAddress.Parse(arrSession[i].strIP), iPort);
+            _pClientUDP_Send.Send(arrData, arrData.Length, pSendIP);
+        }
+    }
+
+
+    public void DoSendPacket_IncludeHeader<Packet>(string strIP, int iPort, Packet_Header pPacketHeader, Packet pPacket)
+        where Packet : INetworkPacket
+    {
+        IPEndPoint pSendIP = new IPEndPoint(IPAddress.Parse(strIP), iPort);
+
+        pPacketHeader.INetworkPacketHeader_Set_Header(SCByteHelper.SizeOf<Packet>(), pPacket.INetworkPacket_Get_PacketID());
+        byte[] arrDataHeader = SCByteHelper.ConvertByteArray(pPacketHeader);
+        byte[] arrData = SCByteHelper.ConvertByteArray(pPacket);
+
+        _pClientUDP_Send.Send(arrDataHeader, arrDataHeader.Length, pSendIP);
+        _pClientUDP_Send.Send(arrData, arrData.Length, pSendIP);
+    }
+
+    public void DoSendPacket_IncludeHeader<Packet>(int iPort, Packet pPacket, Packet_Header pPacketHeader, params Class_SessionDerived[] arrSession)
+        where Packet : INetworkPacket
+    {
+        pPacketHeader.INetworkPacketHeader_Set_Header(SCByteHelper.SizeOf<Packet>(), pPacket.INetworkPacket_Get_PacketID());
+        byte[] arrDataHeader = SCByteHelper.ConvertByteArray(pPacketHeader);
+        byte[] arrData = SCByteHelper.ConvertByteArray(pPacket);
+        for (int i = 0; i < arrSession.Length; i++)
+        {
+            IPEndPoint pSendIP = new IPEndPoint(IPAddress.Parse(arrSession[i].strIP), iPort);
+            _pClientUDP_Send.Send(arrDataHeader, arrDataHeader.Length, pSendIP);
+            _pClientUDP_Send.Send(arrData, arrData.Length, pSendIP);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="Packet"></typeparam>
+    /// <param name="iPort"></param>
+    /// <param name="pPacket"></param>
+    /// <param name="pPacketHeader"></param>
+    /// <param name="eConnectionStateRequest"></param>
+    /// <param name="arrSession">패킷 송신에 성공한 세션들</param>
+    /// <returns></returns>
+    public Class_SessionDerived[] DoSendPacket_IncludeHeader<Packet>(int iPort, Packet pPacket, Packet_Header pPacketHeader, ENetworkConnectionState eConnectionStateRequest, params Class_SessionDerived[] arrSession)
+        where Packet : INetworkPacket
+    {
+        pPacketHeader.INetworkPacketHeader_Set_Header(SCByteHelper.SizeOf<Packet>(), pPacket.INetworkPacket_Get_PacketID());
+        byte[] arrDataHeader = SCByteHelper.ConvertByteArray(pPacketHeader);
+        byte[] arrData = SCByteHelper.ConvertByteArray(pPacket);
+
+        _listSessionTemp.Clear();
+        for (int i = 0; i < arrSession.Length; i++)
+        {
+            if (arrSession[i].p_eConnectionState != eConnectionStateRequest)
+                continue;
+
+            IPEndPoint pSendIP = new IPEndPoint(IPAddress.Parse(arrSession[i].strIP), iPort);
+            _pClientUDP_Send.Send(arrDataHeader, arrDataHeader.Length, pSendIP);
+            _pClientUDP_Send.Send(arrData, arrData.Length, pSendIP);
+            _listSessionTemp.Add(arrSession[i]);
+        }
+
+        return _listSessionTemp.ToArray();
+    }
+
+    public void DoStartListen_UDP(int iPort)
+    {
+        _iPort = iPort;
+        if (_pClientUDP_Recv != null)
+            _pClientUDP_Recv.Close();
+
+        _pClientUDP_Recv = new UdpClient();
+        _pClientUDP_Recv.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+        _pClientUDP_Recv.Client.Bind(new IPEndPoint(IPAddress.Any, iPort));
+        _pClientUDP_Recv.Client.SendTimeout = 10000;
+
+        _bIsListen = true;
+
+        if (_ThreadReceive != null)
+            _ThreadReceive.Abort();
+
+        _ThreadReceive = new Thread(new ThreadStart(ProcListenUDP));
+        _ThreadReceive.IsBackground = true;
+        _ThreadReceive.Start();
+    }
+
+    public byte[] DequeuePacket_OrNull(int iDataSize)
+    {
+        return _pRecvBuffer.Dequeue_OrNull(iDataSize);
+    }
+
+    // ========================================================================== //
+
+    /* protected - Override & Unity API         */
+
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        p_mapNetworkSession = new Dictionary<string, Class_SessionDerived>();
+        OnInitManager(out _iTimeOutSecond, out _iTimeDeleteSessionSecond);
+    }
+
+    protected override IEnumerator OnEnableObjectCoroutine()
+    {
+        while(true)
+        {
+            Check_SessionConnection();
+
+            yield return new WaitForSecondsRealtime(1f);
+        }
+    }
+
+    public override void OnUpdate(ref bool bCheckUpdateCount)
+    {
+        base.OnUpdate(ref bCheckUpdateCount);
+        bCheckUpdateCount = true;
+
+        Update_RecieveMessageQueue();
+    }
+
+    private void OnDestroy()
+    {
+        _pRecvBuffer.Clear();
+        if (_pClientUDP_Recv != null)
+            _pClientUDP_Recv.Close();
+    }
+
+    /* protected - [abstract & virtual]         */
+
+    abstract protected void OnInitManager(out int iTimeOutSecond, out int iTimeDeleteSessionSecond);
+    abstract protected void OnFirstPacket_IsNot_PacketHeader(byte[] arrRecieveData, string strIP, out bool bIsDeletePacket);
+    abstract protected void OnRecievePacket(Class_SessionDerived pSessionSender, Packet_Header pPacketHeader, byte[] arrRecieveData, string strIP);
+    abstract protected void OnInitSession(Class_SessionDerived pSessionSender, Packet_Header pPacketHeader);
+
+    // ========================================================================== //
+
+    #region Private
+
+    private void ProcListenUDP()
+    {
+        _pRecvBuffer.Clear();
+        IPEndPoint pRecieveIP = new IPEndPoint(IPAddress.Any, 0);
+        try
+        {
+            while (_bIsListen)
+            {
+                byte[] arrData = _pClientUDP_Recv.Receive(ref pRecieveIP);
+                if (arrData != null && arrData.Length != 0)
+                {
+                    // 일단 받은 데이터를 버퍼에 넣는다.
+                    _pQueueRecieveThreadMessage.Enqueue(new InnerThread_To_ThreadMessage(pRecieveIP, arrData));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning(e);
+        }
+
+    }
+    
+    private void Check_SessionConnection()
+    {
+        DateTime pDateTimeNow = DateTime.Now;
+        _listSessionTemp.Clear();
+        foreach (var pSession in p_mapNetworkSession.Values)
+        {
+            int iSecondGap = pSession.GetLastConnectionTimeGap(ref pDateTimeNow);
+            if (iSecondGap > _iTimeDeleteSessionSecond)
+            {
+                _listSessionTemp.Add(pSession);
+                pSession.DoChangeConnectionState(ENetworkConnectionState.연결끊김);
+            }
+            else if (iSecondGap > _iTimeOutSecond)
+            {
+                pSession.DoChangeConnectionState(ENetworkConnectionState.연결잠시끊김);
+            }
+        }
+
+        for (int i = 0; i < _listSessionTemp.Count; i++)
+            p_mapNetworkSession.Remove(_listSessionTemp[i].IDictionaryItem_GetKey());
+    }
+
+    private void Update_RecieveMessageQueue()
+    {
+        if (_pQueueRecieveThreadMessage.Count == 0)
+            return;
+
+        InnerThread_To_ThreadMessage pRecieveMessage = _pQueueRecieveThreadMessage.Dequeue();
+        bool bIsOver = _pRecvBuffer.Enqueue(pRecieveMessage.arrRecieveData);
+        string strIP = pRecieveMessage.pRecieveIP.Address.ToString();
+        // 먼저 패킷 헤더만큼 왔는지 버퍼에서 체크한다.
+        byte[] arrPacketHeader = _pRecvBuffer.Peek_OrNull(_iPacketHeaderSize);
+        if (arrPacketHeader == null && arrPacketHeader.Length < _iPacketHeaderSize)
+            return;
+
+        // 패킷 헤더 사이즈 만큼 왔는데, 패킷 헤더가 아닌 경우 자식에게 판단을 맡긴다.
+        Packet_Header pPacketHeader;
+        if (arrPacketHeader.Convert_ToStruct(out pPacketHeader) == false)
+        {
+            bool bIsDeletePacket;
+            OnFirstPacket_IsNot_PacketHeader(arrPacketHeader, strIP, out bIsDeletePacket);
+            if (bIsDeletePacket)
+                _pRecvBuffer.Dequeue_OrNull(pRecieveMessage.arrRecieveData.Length);
+
+            return;
+        }
+
+        if (p_mapNetworkSession.ContainsKey(strIP) == false)
+        {
+            Class_SessionDerived pSessionNew = new Class_SessionDerived();
+            p_mapNetworkSession.Add(strIP, pSessionNew);
+            OnInitSession(pSessionNew, pPacketHeader);
+
+            pSessionNew.DoInitSession(strIP, ExcuteOnChangeSessionConnect);
+        }
+        Class_SessionDerived pSession = p_mapNetworkSession[strIP];
+        pSession.UpdateConnectionTime();
+
+        if (_iPacketHeaderSize + pPacketHeader.INetworkPacketHeader_Get_Payload() > _pRecvBuffer.Count)
+            return;
+
+        // 패킷 헤더가 맞는 경우, 패킷 헤더의 페이로드만큼 빼내고 자식에게 넘긴다.
+        _pRecvBuffer.Dequeue_OrNull(_iPacketHeaderSize);
+        byte[] arrPacket = _pRecvBuffer.Dequeue_OrNull(pPacketHeader.INetworkPacketHeader_Get_Payload());
+        OnRecievePacket(pSession, pPacketHeader, arrPacket, strIP);
+    }
+
+    private void ExcuteOnChangeSessionConnect(CNetworkSession pSession, ENetworkConnectionState eState)
+    {
+        if (p_Event_OnChange_SessionConnection != null)
+            p_Event_OnChange_SessionConnection(p_mapNetworkSession[pSession.strIP], eState);
+    }
+
+    #endregion Private
+
+    // ========================================================================== //
+}
