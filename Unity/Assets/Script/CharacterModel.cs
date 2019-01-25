@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CharacterModel : MonoBehaviour {
 
+    //public delegate void CharacterDeadHandler(CharacterModel char);
+    //public event CharacterDeadHandler CharacterDead;
+
 	public struct CharacterInfo
     {
         public float speedX, speedZ;
@@ -15,7 +18,7 @@ public class CharacterModel : MonoBehaviour {
 
     public void Awake()
     {
-        //
+        
     }
 
     public void StatsUpdate()
