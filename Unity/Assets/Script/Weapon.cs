@@ -29,10 +29,7 @@ public class Weapon : MonoBehaviour {
     /// </summary>
     public float Cooltime;
 
-    /// <summary>
-    /// 남은 탄알 수(-1은 무한)
-    /// </summary>
-    public int Ammo;
+
 
 
 }
