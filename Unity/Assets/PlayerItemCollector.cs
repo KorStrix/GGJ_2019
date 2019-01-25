@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerItemCollector : MonoBehaviour {
-    Weapon w;
-    Armor a;
+    Weapon weaponHeld;
+    Armor armorHeld;
 	// Use this for initialization
 	void Start () {
 		
@@ -15,12 +15,16 @@ public class PlayerItemCollector : MonoBehaviour {
 		
 	}
     private void OnTriggerEnter(Collider other) {
+        switch (other.tag) {
+
+
+        }
         var h = other.GetComponent<Holdable>();
         if (h != null) {
             h.Attach(transform);
-            if (w != null)
-                w.GetComponent<Holdable>().Detach();
-            w = h.GetComponent<Weapon>();
+            if (weaponHeld != null)
+                weaponHeld.GetComponent<Holdable>().Detach();
+            weaponHeld = h.GetComponent<Weapon>();
         }
     }
 }

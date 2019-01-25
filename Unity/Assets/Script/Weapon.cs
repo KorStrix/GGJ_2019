@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum WeaponType { }
+public enum WeaponType { knife}
 public class Weapon : MonoBehaviour {
     /// <summary>
     /// 무기의 이름
