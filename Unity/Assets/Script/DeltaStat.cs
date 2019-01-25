@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 
-
+[System.Serializable]
 public class DeltaStat {
     public StatType type;
     public float value;
