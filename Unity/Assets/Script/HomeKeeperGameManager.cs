@@ -54,11 +54,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         p_Event_OnGameState.DoNotify(EGameState.Fail);
     }
 
-    public void DoSlowTime()
-    {
-        _pManagerTimeScale.DoSetTimeScale_Fade(0.1f, 1f);
-    }
-
     public void DoRecoveryTime()
     {
         _pManagerTimeScale.DoSetTimeScale_Fade(1f, 1f);
@@ -78,6 +73,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         {
             GameObject.Instantiate(Resources.Load("Prefab/UIRoot"));
         }
+
+        PlayerInput.p_Event_OnMovePlayer.Subscribe += P_Event_OnMovePlayer_Subscribe;
     }
 
     protected override void OnEnableObject()
@@ -104,9 +101,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
             DoGame_Fail();
 
         if (Input.GetKeyDown(KeyCode.Alpha4))
-            DoSlowTime();
-
-        if (Input.GetKeyDown(KeyCode.Alpha5))
             DoRecoveryTime();
     }
 
@@ -116,6 +110,15 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     // ========================================================================== //
 
     #region Private
+
+    private void P_Event_OnMovePlayer_Subscribe(bool bMovement)
+    {
+        float fCurrentTimeScale = _pManagerTimeScale.p_fCurrentTimeScale;
+        if (bMovement)
+            _pManagerTimeScale.DoSetTimeScale(Mathf.Clamp(fCurrentTimeScale + Time.unscaledDeltaTime, 0.1f, 1f)  );
+        else
+            _pManagerTimeScale.DoSetTimeScale(Mathf.Clamp(fCurrentTimeScale - Time.unscaledDeltaTime, 0.1f, 1f));
+    }
 
     #endregion Private
 }

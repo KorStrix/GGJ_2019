@@ -24,6 +24,8 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         Text_Stat_S,
         Text_Stat_D,
         Text_Stat_L,
+
+        Text_TimeScale,
     }
 
     public enum ESprite
@@ -70,6 +72,17 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
     /* protected - Override & Unity API         */
 
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        CManagerTimeScale.instance.p_Event_OnChangeTimeScale.Subscribe += P_Event_OnChangeTimeScale_Subscribe;
+    }
+
+    private void P_Event_OnChangeTimeScale_Subscribe(float fTimeScale)
+    {
+        _mapText[EText.Text_TimeScale].text = fTimeScale.ToString("F1");
+    }
 
     /* protected - [abstract & virtual]         */
 

@@ -47,6 +47,12 @@ public class AIMovement_Input : CObjectBase
 
     /* protected - Override & Unity API         */
 
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+    }
+
     public override void OnUpdate()
     {
         base.OnUpdate();
