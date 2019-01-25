@@ -32,12 +32,24 @@ public class UIManager : CManagerUGUIBase<UIManager, UIManager.EUIPanel>
 
     /* protected & private - Field declaration         */
 
+    CManagerPooling<HealthBar> _pHealthBarPool = new CManagerPooling<HealthBar>();
+
+    GameObject _pObjectHealthBar_Origin;
 
     // ========================================================================== //
 
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
+    public HealthBar GetHealthBar()
+    {
+        return _pHealthBarPool.DoPop(_pObjectHealthBar_Origin);
+    }
+
+    public void Return_HealthBar(HealthBar pHealthbAr)
+    {
+        _pHealthBarPool.DoPush(pHealthbAr);
+    }
 
     // ========================================================================== //
 
