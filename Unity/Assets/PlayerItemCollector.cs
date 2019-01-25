@@ -8,10 +8,12 @@ public class PlayerItemCollector : MonoBehaviour {
     public delegate void OnGetWeapon(Weapon newWeapon);
     public delegate void OnGetArmor(Armor newArmor);
     public delegate void OnGetJewel(Jewel newJewel);
+    public delegate void OnGetConsumable(Consumable consumable);
 
     public event OnGetWeapon EventOnGetWeapon;
     public event OnGetArmor EventOnGetArmor;
     public event OnGetJewel EventOnGetJewel;
+    public event OnGetConsumable EventOnGetConsumable;
 
     public Weapon WeaponHeld { get; private set; }
     public Armor ArmorHeld { get; private set; }
@@ -54,6 +56,7 @@ public class PlayerItemCollector : MonoBehaviour {
             break;
         case "consumable":
             var c = other.GetComponent<Consumable>();
+            EventOnGetConsumable(c);
             Destroy(other.gameObject);
             break;
         case "jewel":
