@@ -4,5 +4,5 @@ using UnityEngine;
 [CreateAssetMenu]
 public class StatEffects : ScriptableObject {
 
-    public List<DeltaStat> DeltaStats;
+    public List<DeltaStat> deltaStats;
 }

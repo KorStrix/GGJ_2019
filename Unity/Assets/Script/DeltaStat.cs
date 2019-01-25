@@ -6,7 +6,7 @@ using UnityEditor;
 
 
 public class DeltaStat {
-    public StatType Type;
-    public float Value;
+    public StatType type;
+    public float value;
 	
 }

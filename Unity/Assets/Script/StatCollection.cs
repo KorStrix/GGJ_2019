@@ -23,18 +23,18 @@ public class StatCollection
 
     }
 
-    public Stat CreateStat(string name, int v, float fv)
+    public Stat CreateStat(StatType type, int v, float fv)
     {
         Stat s;
-        s = new Stat(name, v, fv);
+        s = new Stat(type, v, fv);
         Stats.Add(s);
         return s;
     }
 
-    public MutableStat CreateMutableStat(string name, int v, float fv)
+    public MutableStat CreateMutableStat(StatType type, int v, float fv)
     {
         MutableStat s;
-        s = new MutableStat(name, v, fv);
+        s = new MutableStat(type, v, fv);
         Stats.Add(s);
         return s;
     }

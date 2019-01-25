@@ -8,4 +8,29 @@ public class CharacterModel : MonoBehaviour {
     {
         public float speedX, speedZ;
     }
+
+    public BasicStats basics;
+    public SecondStats seconds;
+    public StatEffects effects;
+
+    public void Awake()
+    {
+        //
+    }
+
+    public void StatsUpdate()
+    {
+        //
+        foreach (DeltaStat d in effects.deltaStat)
+        {
+            //effect 종류 모름
+        }
+        SecondStatsUpdate();
+    }
+
+    public void SecondStatsUpdate()
+    {
+        //
+    }
+
 }
