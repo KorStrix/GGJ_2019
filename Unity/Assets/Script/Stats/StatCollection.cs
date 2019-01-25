@@ -18,11 +18,6 @@ public class StatCollection
         }
     }
 
-    protected virtual void ConfigureStats()
-    {
-
-    }
-
     public Stat CreateStat(StatType type, int v, float fv)
     {
         Stat s;

@@ -6,7 +6,7 @@ public class Stat
 {
     private StatType _type;
     //스탯은 정수 또는 부동소수점 값을 갖는다.
-    protected int _value;
+    public int _value;
     protected float _fvalue;
     //스탯에는 증가 버프와 배수 버프가 있다.
     //증가 버프 적용 후 배수 버프가 적용된다.
@@ -34,7 +34,7 @@ public class Stat
         set { _value = value; }
     }
 
-    public float FValue
+    private float FValue
     {
         get { return FloatStatClipper(); }
         set { _fvalue = value; }
@@ -176,12 +176,12 @@ public class Stat
         _multiBuff.Clear();
     }
 
-    public void ClearWeapon()
+    public void ClearArmor()
     {
-        RemoveAddItemBuff(BuffType.WEAPON);
-        RemoveAddBuff(BuffType.WEAPON);
-        RemoveMultiItemBuff(BuffType.WEAPON);
-        RemoveMultiBuff(BuffType.WEAPON);
+        RemoveAddItemBuff(BuffType.ARMOR);
+        RemoveAddBuff(BuffType.ARMOR);
+        RemoveMultiItemBuff(BuffType.ARMOR);
+        RemoveMultiBuff(BuffType.ARMOR);
     }
 
     public virtual int StatClipper()

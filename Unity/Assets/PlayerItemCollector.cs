@@ -23,6 +23,15 @@ public class PlayerItemCollector : MonoBehaviour {
     // Use this for initialization
     void Start () {
         fist = GetComponentInChildren<Weapon>();
+
+        //Search for Character
+        var ch = GetComponent<CharacterModel>();
+        if (ch != null)
+        {
+            EventOnGetWeapon += ch.GetWeapon;
+            EventOnGetArmor += ch.GetArmor;
+            EventOnGetJewel += ch.GetJewel;
+        }
     }
 
 
