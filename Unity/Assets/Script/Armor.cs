@@ -16,7 +16,7 @@ public class Armor : MonoBehaviour {
     /// </summary>
     public ArmorType Type;
 
-    
+    public StatEffects effects;
 
 
 }
