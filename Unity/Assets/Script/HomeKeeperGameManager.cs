@@ -73,6 +73,18 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         base.OnAwake();
 
         _pManagerTimeScale = CManagerTimeScale.instance;
+
+        if(UIManager.instance == null)
+        {
+            GameObject.Instantiate(Resources.Load("Prefab/UIRoot"));
+        }
+    }
+
+    protected override void OnEnableObject()
+    {
+        base.OnEnableObject();
+
+        DoGame_Start();
     }
 
     public override void OnUpdate()

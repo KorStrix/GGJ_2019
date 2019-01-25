@@ -21,6 +21,7 @@ public class Panel_GameStart : CUGUIPanelBase
 
     /* public - Field declaration            */
 
+    public float p_fWaitSeconds = 3f;
 
     /* protected & private - Field declaration         */
 
@@ -35,6 +36,12 @@ public class Panel_GameStart : CUGUIPanelBase
 
     /* protected - Override & Unity API         */
 
+    protected override IEnumerator OnEnableObjectCoroutine()
+    {
+        yield return new WaitForSeconds(p_fWaitSeconds);
+
+        DoHide_UGUIPanel();
+    }
 
     /* protected - [abstract & virtual]         */
 
