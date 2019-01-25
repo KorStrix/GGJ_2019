@@ -1,7 +1,7 @@
 ﻿#region Header
 /*	============================================
  *	작성자 : Strix
- *	작성일 : 2019-01-25 오후 11:57:53
+ *	작성일 : 2019-01-26 오전 2:12:22
  *	개요 : 
    ============================================ */
 #endregion Header
@@ -9,39 +9,67 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 /// <summary>
 /// 
 /// </summary>
-public class HealthBar : CUIObjectBase
+[ExecuteInEditMode]
+public class Spawner_Character : CObjectBase
 {
     /* const & readonly declaration             */
 
     /* enum & struct declaration                */
 
+    public enum ECharacterType
+    {
+        Player,
+        Thief,
+    }
+
     /* public - Field declaration            */
 
-    public float p_fRemainHP_0_1 { get; private set; }
+    public ECharacterType p_eCharacterType;
 
     /* protected & private - Field declaration         */
 
-    [GetComponentInChildren("Image_HP_Fill")]
-    Image _pImage_Fill = null;
 
     // ========================================================================== //
 
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    public void DoEdit_HealthBar(float fRemainHP_0_1)
+    [Button("DoSpawn_Character")]
+    public void DoSpawn_Character()
     {
-        p_fRemainHP_0_1 = fRemainHP_0_1;
+        for (int i = 0; i < transform.childCount; i++)
+            DestroyImmediate(transform.GetChild(0).gameObject);
+
+        GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Character/" + p_eCharacterType.ToString())) as GameObject;
+        pObjectPrefab.transform.SetParent(transform);
+        pObjectPrefab.transform.DoResetTransform();
     }
 
     // ========================================================================== //
 
     /* protected - Override & Unity API         */
+
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        DoSpawn_Character();
+    }
+
+#if UNITY_EDITOR
+    private void Update()
+    {
+        if (Application.isPlaying)
+            return;
+
+        DoSpawn_Character();
+    }
+#endif
 
     /* protected - [abstract & virtual]         */
 
