@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ArmorType { }
+public enum ArmorType {Head, Torso }
 public class Armor : MonoBehaviour {
 
     /// <summary>

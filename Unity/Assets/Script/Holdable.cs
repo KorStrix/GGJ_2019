@@ -31,7 +31,7 @@ public class Holdable : MonoBehaviour {
     /// <summary>
     /// 이 오브젝트를 바닥에 내려놓습니다. 무기 아이템 스프라이트가 보입니다.
     /// </summary>
-    public void Detach() {
+    public void Detach(Vector3 direction) {
         transform.SetParent(null, true);
         isHeld = false;
         GetComponent<Renderer>().SetActive(true);

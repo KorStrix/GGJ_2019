@@ -21,9 +21,9 @@ public class CharacterModel : MonoBehaviour {
 
     public void Awake()
     {
-        PlayerItemCollector.EventOnGetWeapon += GetWeapon;
-        PlayerItemCollector.EventOnGetArmor += GetArmor;
-        PlayerItemCollector.EventOnGetJewel += GetJewel;
+        //PlayerItemCollector.EventOnGetWeapon += GetWeapon;
+        //PlayerItemCollector.EventOnGetArmor += GetArmor;
+        //PlayerItemCollector.EventOnGetJewel += GetJewel;
     }
 
     public void GetWeapon(Weapon weapon)
@@ -42,12 +42,12 @@ public class CharacterModel : MonoBehaviour {
     {
 
     }
-
+    /*
     public virtual GetJewel(Jewel jewel)
     {
         //
     }
-
+    */
     public void StatsUpdate()
     {
         /*
