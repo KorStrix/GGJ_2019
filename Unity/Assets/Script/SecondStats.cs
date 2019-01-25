@@ -6,7 +6,7 @@ public class SecondStats : StatCollection
 {
     public Stat hp, damage, defence, accuracy, crit, evasion;
 
-    public BasicStats()
+    public void BasicStats()
     {
         ConfigureStats();
     }

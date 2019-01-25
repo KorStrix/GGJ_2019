@@ -20,12 +20,14 @@ public class CharacterModel : MonoBehaviour {
 
     public void StatsUpdate()
     {
+        /*
         //
         foreach (DeltaStat d in effects.deltaStat)
         {
             //effect 종류 모름
         }
         SecondStatsUpdate();
+        */
     }
 
     public void SecondStatsUpdate()

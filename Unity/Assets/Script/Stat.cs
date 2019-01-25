@@ -10,10 +10,10 @@ public class Stat
     protected float _fvalue;
     //스탯에는 증가 버프와 배수 버프가 있다.
     //증가 버프 적용 후 배수 버프가 적용된다.
-    protected Dictionary<StatType, int> _addItemBuff;
-    protected Dictionary<StatType, int> _addBuff;
-    protected Dictionary<StatType, float> _multiItemBuff;
-    protected Dictionary<StatType, float> _multiBuff;
+    protected Dictionary<BuffType, int> _addItemBuff;
+    protected Dictionary<BuffType, int> _addBuff;
+    protected Dictionary<BuffType, float> _multiItemBuff;
+    protected Dictionary<BuffType, float> _multiBuff;
 
     public Stat (StatType type, int value, float fvalue)
     {
@@ -40,55 +40,55 @@ public class Stat
         set { _fvalue = value; }
     }
 
-    public Dictionary<StatType, int> AddItemBuff
+    public Dictionary<BuffType, int> AddItemBuff
     {
         get
         {
             if (_addItemBuff == null)
             {
-                _addItemBuff = new Dictionary<StatType, int>();
+                _addItemBuff = new Dictionary<BuffType, int>();
             }
             return _addItemBuff;
         }
     }
 
-    public Dictionary<StatType, int> AddBuff
+    public Dictionary<BuffType, int> AddBuff
     {
         get
         {
             if (_addBuff == null)
             {
-                _addBuff = new Dictionary<StatType, int>();
+                _addBuff = new Dictionary<BuffType, int>();
             }
             return _addBuff;
         }
     }
 
-    public Dictionary<StatType, float> MultiItemBuff
+    public Dictionary<BuffType, float> MultiItemBuff
     {
         get
         {
             if (_multiItemBuff == null)
             {
-                _multiItemBuff = new Dictionary<StatType, float>();
+                _multiItemBuff = new Dictionary<BuffType, float>();
             }
             return _multiItemBuff;
         }
     }
 
-    public Dictionary<StatType, float> MultiBuff
+    public Dictionary<BuffType, float> MultiBuff
     {
         get
         {
             if (_multiBuff == null)
             {
-                _multiBuff = new Dictionary<StatType, float>();
+                _multiBuff = new Dictionary<BuffType, float>();
             }
             return _multiBuff;
         }
     }
 
-    public void SetAddItemBuff(StatType buffType, int value)
+    public void SetAddItemBuff(BuffType buffType, int value)
     {
         if (_addItemBuff.ContainsKey(buffType))
         {
@@ -97,7 +97,7 @@ public class Stat
         _addItemBuff.Add(buffType, value);
     }
 
-    public void SetAddBuff(StatType buffType, int value)
+    public void SetAddBuff(BuffType buffType, int value)
     {
         if (_addBuff.ContainsKey(buffType))
         {
@@ -106,7 +106,7 @@ public class Stat
         _addBuff.Add(buffType, value);
     }
 
-    public void SetMultiItemBuff(StatType buffType, float value)
+    public void SetMultiItemBuff(BuffType buffType, float value)
     {
         if (_multiItemBuff.ContainsKey(buffType))
         {
@@ -115,7 +115,7 @@ public class Stat
         _multiItemBuff.Add(buffType, value);
     }
 
-    public void SetMultiBuff(StatType buffType, float value)
+    public void SetMultiBuff(BuffType buffType, float value)
     {
         if (_multiBuff.ContainsKey(buffType))
         {
@@ -124,7 +124,7 @@ public class Stat
         _multiBuff.Add(buffType, value);
     }
 
-    public void RemoveAddItemBuff(StatType buffType)
+    public void RemoveAddItemBuff(BuffType buffType)
     {
         if (_addItemBuff.ContainsKey(buffType))
         {
@@ -132,7 +132,7 @@ public class Stat
         }
     }
 
-    public void RemoveAddBuff(StatType buffType)
+    public void RemoveAddBuff(BuffType buffType)
     {
         if (_addBuff.ContainsKey(buffType))
         {
@@ -140,7 +140,7 @@ public class Stat
         }
     }
 
-    public void RemoveMultiItemBuff(StatType buffType)
+    public void RemoveMultiItemBuff(BuffType buffType)
     {
         if (_multiItemBuff.ContainsKey(buffType))
         {
@@ -148,7 +148,7 @@ public class Stat
         }
     }
 
-    public void RemoveMultiBuff(StatType buffType)
+    public void RemoveMultiBuff(BuffType buffType)
     {
         if (_multiBuff.ContainsKey(buffType))
         {
@@ -179,20 +179,20 @@ public class Stat
     public virtual int StatClipper()
     {
         int v = _value;
-        foreach (KeyValuePair<StatType, int> i in AddItemBuff)
+        foreach (KeyValuePair<BuffType, int> i in AddItemBuff)
         {
             v += i.Value;
         }
-        foreach (KeyValuePair<StatType, int> j in AddBuff)
+        foreach (KeyValuePair<BuffType, int> j in AddBuff)
         {
             v += j.Value;
         }
         float w = (float)v;
-        foreach (KeyValuePair<StatType, float> k in MultiItemBuff)
+        foreach (KeyValuePair<BuffType, float> k in MultiItemBuff)
         {
             w *= k.Value;
         }
-        foreach (KeyValuePair<StatType, float> l in MultiBuff)
+        foreach (KeyValuePair<BuffType, float> l in MultiBuff)
         {
             w *= l.Value;
         }
@@ -203,19 +203,19 @@ public class Stat
     public virtual float FloatStatClipper()
     {
         float v = _fvalue;
-        foreach (KeyValuePair<StatType, int> i in AddItemBuff)
+        foreach (KeyValuePair<BuffType, int> i in AddItemBuff)
         {
             v += i.Value;
         }
-        foreach (KeyValuePair<StatType, int> j in AddBuff)
+        foreach (KeyValuePair<BuffType, int> j in AddBuff)
         {
             v += j.Value;
         }
-        foreach (KeyValuePair<StatType, float> k in MultiItemBuff)
+        foreach (KeyValuePair<BuffType, float> k in MultiItemBuff)
         {
             v *= k.Value;
         }
-        foreach (KeyValuePair<StatType, float> l in MultiBuff)
+        foreach (KeyValuePair<BuffType, float> l in MultiBuff)
         {
             v *= l.Value;
         }

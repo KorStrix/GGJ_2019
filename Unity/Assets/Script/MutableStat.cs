@@ -21,20 +21,20 @@ public class MutableStat : Stat
     public override int StatClipper()
     {
         int v = _value;
-        foreach (KeyValuePair<StatType, int> i in AddItemBuff)
+        foreach (KeyValuePair<BuffType, int> i in AddItemBuff)
         {
             v += i.Value;
         }
-        foreach (KeyValuePair<StatType, int> j in AddBuff)
+        foreach (KeyValuePair<BuffType, int> j in AddBuff)
         {
             v += j.Value;
         }
         float w = (float)v;
-        foreach (KeyValuePair<StatType, float> k in MultiItemBuff)
+        foreach (KeyValuePair<BuffType, float> k in MultiItemBuff)
         {
             w *= k.Value;
         }
-        foreach (KeyValuePair<StatType, float> l in MultiBuff)
+        foreach (KeyValuePair<BuffType, float> l in MultiBuff)
         {
             w *= l.Value;
         }
@@ -49,19 +49,19 @@ public class MutableStat : Stat
     public override float FloatStatClipper()
     {
         float v = _fvalue;
-        foreach (KeyValuePair<StatType, int> i in AddItemBuff)
+        foreach (KeyValuePair<BuffType, int> i in AddItemBuff)
         {
             v += i.Value;
         }
-        foreach (KeyValuePair<StatType, int> j in AddBuff)
+        foreach (KeyValuePair<BuffType, int> j in AddBuff)
         {
             v += j.Value;
         }
-        foreach (KeyValuePair<StatType, float> k in MultiItemBuff)
+        foreach (KeyValuePair<BuffType, float> k in MultiItemBuff)
         {
             v *= k.Value;
         }
-        foreach (KeyValuePair<StatType, float> l in MultiBuff)
+        foreach (KeyValuePair<BuffType, float> l in MultiBuff)
         {
             v *= l.Value;
         }
