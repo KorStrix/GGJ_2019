@@ -21,9 +21,16 @@ public class PlayerItemCollector : MonoBehaviour {
 
     Rigidbody characterRigid;
     Weapon fist;
+
+    private void Awake() {
+      
+    }
     // Use this for initialization
     void Start () {
-        fist = GetComponentInChildren<Weapon>();
+        CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
+        fist = CManagerPooling_InResources<string, Weapon>.instance.DoPop("Fist");
+        fist.transform.SetParent(transform);
+        fist.transform.localPosition = Vector3.zero;
         characterRigid = GetComponentInParent<Rigidbody>();
         WeaponHeld = fist;
         //Search for Character
@@ -34,6 +41,7 @@ public class PlayerItemCollector : MonoBehaviour {
             EventOnGetArmor += ch.GetArmor;
             EventOnGetJewel += ch.GetJewel;
         }
+        EventOnGetWeapon(fist);
     }
 
 

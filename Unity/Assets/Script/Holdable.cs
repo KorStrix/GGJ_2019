@@ -28,7 +28,7 @@ public class Holdable : MonoBehaviour {
         transform.localPosition = Vector3.zero;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         GetComponentInChildren<Renderer>().enabled = false;
-        GetComponent<Collider>().enabled = false;
+        foreach(var c in GetComponents<Collider>())c.enabled = false;
         isHeld = true;
     }
 
@@ -38,7 +38,7 @@ public class Holdable : MonoBehaviour {
     public void Detach(Vector3 speed) {
         Debug.Log("Detach!");
         transform.SetParent(null, true);
-        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
         GetComponent<Rigidbody>().velocity = speed*SPEEDSCALE;
         isHeld = false;
         GetComponentInChildren<Renderer>().enabled = true;
@@ -51,8 +51,8 @@ public class Holdable : MonoBehaviour {
     public IEnumerator WaitAfterDetached() {
         yield return new WaitForSeconds(nonInteractTime);
 
-        GetComponent<Collider>().enabled = true;
-        
+        foreach (var c in GetComponents<Collider>()) c.enabled = true;
+
     }
     
 }
