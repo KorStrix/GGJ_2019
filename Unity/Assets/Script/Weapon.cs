@@ -29,10 +29,8 @@ public class Weapon : MonoBehaviour {
     /// </summary>
     public float Cooltime;
 
-    /// <summary>
-    /// 무기의 명중률
-    /// </summary>
-    public float Accuracy;
+
+    public StatEffects effects;
 
 
 }

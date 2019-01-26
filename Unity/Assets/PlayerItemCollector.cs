@@ -93,15 +93,17 @@ public class PlayerItemCollector : MonoBehaviour {
         else {
             WeaponHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
             WeaponHeld = fist;
+            EventOnGetWeapon(fist);
         }
     }
     public void DropArmor() {
         ArmorHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
         ArmorHeld = null;
-
+        EventOnGetArmor(null);
     }
     public void DropJewel() {
         JewelHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
         JewelHeld = null;
+        EventOnGetJewel(null);
     }
 }
