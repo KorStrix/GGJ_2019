@@ -55,7 +55,8 @@ public class CharacterModel : CObjectBase
     public void GetWeapon(Weapon pWeapon)
     {
         _pWeapon_Equiped = pWeapon;
-        pStat.SetItemStat(pWeapon, null);
+
+        pStat?.SetItemStat(pWeapon, null);
         //pStat.DoIncrease_Stat(pWeapon.effects);
 
         p_Event_OnChange_Weapon.DoNotify(pWeapon);
@@ -64,7 +65,7 @@ public class CharacterModel : CObjectBase
     public void GetArmor(Armor pArmor)
     {
         _pArmor_Equiped = pArmor;
-        pStat.SetItemStat(null, pArmor);
+        pStat?.SetItemStat(null, pArmor);
         //pStat.DoIncrease_Stat(pArmor.effects);
 
         p_Event_OnChange_Armor.DoNotify(pArmor);
@@ -74,10 +75,7 @@ public class CharacterModel : CObjectBase
     {
         base.OnAwake();
 
-        //Warning
-        pStat = new Stats();
-
-        pStat.DoInit();
+        pStat?.DoInit();
     }
 
     public float CalcDamage(float hp, GameObject target)

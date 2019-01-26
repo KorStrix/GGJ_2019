@@ -78,9 +78,9 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
     /* protected - Override & Unity API         */
 
-    protected override void OnAwake()
+    protected override IEnumerator OnAwakeCoroutine()
     {
-        base.OnAwake();
+        yield return null;
 
         CManagerTimeScale.instance.p_Event_OnChangeTimeScale.Subscribe += P_Event_OnChangeTimeScale_Subscribe;
 

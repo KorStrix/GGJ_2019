@@ -1,7 +1,7 @@
 ﻿#region Header
 /*	============================================
  *	작성자 : Strix
- *	작성일 : 2019-01-26 오전 3:29:23
+ *	작성일 : 2019-01-27 오전 2:51:46
  *	개요 : 
    ============================================ */
 #endregion Header
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 
 /// </summary>
-public class CharacterMovement : CObjectBase
+public class CharacterModel_LookMoveDirection : CObjectBase
 {
     /* const & readonly declaration             */
 
@@ -21,36 +21,39 @@ public class CharacterMovement : CObjectBase
 
     /* public - Field declaration            */
 
-    public CObserverSubject<bool, Vector3> p_Event_OnMovePlayer { get; private set; } = new CObserverSubject<bool, Vector3>();
 
     /* protected & private - Field declaration         */
 
-    [GetComponent]
-    CharacterModel _pCharacterModel = null;
-    [GetComponent]
-    Rigidbody _pRigidbody = null;
 
     // ========================================================================== //
 
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    public void DoMove(Vector3 vecDesireDirection)
-    {
-        //Vector3 vecPos = _pTransform.position + new Vector3(fSpeedX, 0.0f, fSpeedZ);
-        //_pRigidbody.MovePosition(vecPos);
-
-        if (_pCharacterModel.pStat == null)
-            return;
-
-        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.pStat.speed * Time.deltaTime;
-        p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f, vecDesireDirection);
-    }
 
     // ========================================================================== //
 
     /* protected - Override & Unity API         */
 
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        GetComponentInParent<CharacterMovement>().p_Event_OnMovePlayer.Subscribe += P_Event_OnMovePlayer_Subscribe; ;
+    }
+
+    private void P_Event_OnMovePlayer_Subscribe(bool arg1, Vector3 arg2)
+    {
+        if(arg1)
+        {
+            Vector3 vecScale = transform.localScale;
+            vecScale.x = Mathf.Abs(vecScale.x);
+            if (arg2.x < 0f)
+                vecScale.x *= -1f;
+
+            transform.localScale = vecScale;
+        }
+    }
 
     /* protected - [abstract & virtual]         */
 
