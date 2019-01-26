@@ -19,9 +19,20 @@ public class CharacterModel : CObjectBase
     private Armor _pArmor_Equiped;
     private List<Jewel> _listJewel = new List<Jewel>();
 
-    public void DoAttack()
+    public void DoAttack_Melee()
     {
-        //CManagerEffect.instance.DoPlayEffect(_pWeaponEquied.VisualEffect);
+        Weapon pWeaponCurrent = _pWeaponEquied == null ? _pWeapon_Hands : _pWeaponEquied;
+        CManagerEffect.instance.DoPlayEffect(pWeaponCurrent.VisualEffect.ToString(), transform.position);
+
+        Debug.Log("DoAttack_Melee");
+    }
+
+    public void DoAttack_Gun()
+    {
+        Weapon pWeaponCurrent = _pWeaponEquied == null ? _pWeapon_Hands : _pWeaponEquied;
+        CManagerEffect.instance.DoPlayEffect(pWeaponCurrent.VisualEffect.ToString(), transform.position);
+
+        Debug.Log("DoAttack_Gun");
     }
 
     public void GetWeapon(Weapon weapon)
