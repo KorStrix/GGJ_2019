@@ -10,7 +10,11 @@ public class PlayerInput : CObjectBase
     [GetComponent]
     public CharacterMovement p_pCharacterMovement { get; private set; }
     [GetComponent]
+    public CharacterModel p_pCharacterModel { get; private set; }
+    [GetComponent]
     AIPath _pNavmeshAgent = null;
+    [GetComponent]
+    Rigidbody _pRigidbody = null;
 
     Transform _pTransform_NavmeshTarget;
 
@@ -44,6 +48,13 @@ public class PlayerInput : CObjectBase
 
         if (_pTransform_NavmeshTarget)
         {
+            float fDistance = Vector3.Distance(transform.position, _pTransform_NavmeshTarget.position);
+            if (p_pCharacterModel.GetCurrentWeapon().Range > fDistance)
+            {
+                _pRigidbody.velocity = Vector3.zero;
+                return;
+            }
+
             _pNavmeshAgent.destination = _pTransform_NavmeshTarget.position;
 
             //if(_pNavmeshAgent.desiredVelocity.normalized.Equals(Vector3.zero))

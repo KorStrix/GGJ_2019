@@ -16,7 +16,7 @@ using Pathfinding;
 /// 
 /// </summary>
 [RequireComponent(typeof(AIPath))]
-public class AIMovement_Input : CObjectBase
+public class AIInput : CObjectBase
 {
     /* const & readonly declaration             */
 
@@ -35,8 +35,6 @@ public class AIMovement_Input : CObjectBase
     AIPath _pAIPath = null;
     [GetComponent]
     CharacterModel _pCharacterModel = null;
-    [GetComponentInChildren]
-    CPhysicsTrigger _pPhysicsTrigger = null;
 
     Transform _pTransformTarget;
     Stats _pStat_Mine;
@@ -64,20 +62,23 @@ public class AIMovement_Input : CObjectBase
 
     /* protected - Override & Unity API         */
 
-    protected override IEnumerator OnEnableObjectCoroutine()
+    protected override void OnAwake()
     {
-        yield return null;
+        base.OnAwake();
 
-        _pStat_Mine = GetComponent<CharacterModel>().pStat;
+        _pCharacterModel.p_Event_OnSetTarget.Subscribe += Event_OnSetTarget_Subscribe;
+    }
 
-        while (true)
-        {
-            yield return StartCoroutine(CoAIState_OnScanTarget());
+    private void Event_OnSetTarget_Subscribe(GameObject pObject)
+    {
+        DoSetTarget(pObject.transform);
+    }
 
-            yield return null;
+    protected override void OnEnableObject()
+    {
+        base.OnEnableObject();
 
-            yield return StartCoroutine(CoAIState_OnChase_ForAttack());
-        }
+        _pCharacterModel.DoStartAI();
     }
 
     public override void OnUpdate()
@@ -87,11 +88,9 @@ public class AIMovement_Input : CObjectBase
         if (_pTransformTarget == null)
             return;
 
-        if (_pCharacterModel.p_pWeapon_Equiped == null)
-            return;
 
-        float fDistance = Vector3.Distance(transform.position, _pTransformTarget.position);
-        if(fDistance > _pCharacterModel.p_pWeapon_Equiped.Range)
+        float fDistance = Vector3.Distance(transform.position, _pTransformTarget.position); 
+        if(fDistance > _pCharacterModel.GetCurrentWeapon().Range)
         {
             _pAIPath.destination = _pTransformTarget.position;
             _pCharacterMovement.DoMove(_pAIPath.desiredVelocity.normalized);
@@ -108,44 +107,6 @@ public class AIMovement_Input : CObjectBase
     // ========================================================================== //
 
     #region Private
-
-    IEnumerator CoAIState_OnScanTarget()
-    {
-        _pPhysicsTrigger.GetComponent<SphereCollider>().radius = _pStat_Mine.fDetectArea;
-        _pPhysicsTrigger.DoClear_InColliderList();
-
-        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0)
-        {
-            yield return null;
-        }
-
-        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
-        DoSetTarget(listCollider[0].transform);
-    }
-
-
-    IEnumerator CoAIState_OnChase_ForAttack()
-    {
-        while(true)
-        {
-            while (_pPhysicsTrigger.GetColliderList_3D_Enter().Count == 0)
-            {
-                yield return null;
-            }
-
-            Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
-            float fDistance = Vector3.Distance(transform.position, pTransformTarget.position);
-            if (_pCharacterModel.p_pWeapon_Equiped.DoCheck_IsReadyToFire(fDistance) && Physics.Raycast(transform.position, pTransformTarget.position, _pCharacterModel.pTerrainLayer) == false)
-            {
-                List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
-                for(int i = 0; i < listCollider.Count; i++)
-                    _pCharacterModel.DoAttack_Melee(listCollider[i].gameObject);
-                break;
-            }
-
-            yield return null;
-        }
-    }
 
     private void CalculateNextJewel()
     {

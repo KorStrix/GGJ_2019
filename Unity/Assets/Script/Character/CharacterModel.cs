@@ -14,8 +14,8 @@ public class CharacterModel : CObjectBase
     public CObserverSubject<Weapon> p_Event_OnChange_Weapon_Ranged { get; private set; } = new CObserverSubject<Weapon>();
     public CObserverSubject<Armor> p_Event_OnChange_Armor { get; private set; } = new CObserverSubject<Armor>();
 
-    public Weapon p_pWeapon_Equiped { get; private set; }
-    public Weapon p_pWeapon_Equiped_Ranged { get; private set; }
+    public CObserverSubject<GameObject> p_Event_OnSetTarget { get; private set; } = new CObserverSubject<GameObject>();
+
     public Armor p_pArmor_Equiped { get; private set; }
 
     // -----------------------
@@ -24,17 +24,20 @@ public class CharacterModel : CObjectBase
 
     public LayerMask pTerrainLayer;
 
-    Weapon _pWeapon_Hands = null;
+    Weapon _pWeapon_Equiped;
+    Weapon _pWeapon_Fist;
     Armor _pArmor_Torso = null;
 
     [GetComponentInChildren]
     CAnimatorController p_pAnimator = null;
+    [GetComponentInChildren]
+    CPhysicsTrigger _pPhysicsTrigger = null;
 
     // -----------------------
 
     public void DoAttack_Melee(GameObject pObjectTarget)
     {
-        Weapon pWeaponCurrent = p_pWeapon_Equiped == null ? _pWeapon_Hands : p_pWeapon_Equiped;
+        Weapon pWeaponCurrent = GetCurrentWeapon();
         pWeaponCurrent.DoFire_Weapon();
         p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnAttack);
 
@@ -47,9 +50,17 @@ public class CharacterModel : CObjectBase
         target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit");
     }
 
+    public Weapon GetCurrentWeapon()
+    {
+        if(_pWeapon_Fist == null && _pWeapon_Equiped == null)
+            Debug.LogError(name + "GetCurrentWeapon() == null", this);
+
+        return _pWeapon_Equiped == null ? _pWeapon_Fist : _pWeapon_Equiped;
+    }
+
     public void GetWeapon(Weapon pWeapon)
     {
-        p_pWeapon_Equiped = pWeapon;
+        _pWeapon_Equiped = pWeapon;
         p_Event_OnChange_Weapon.DoNotify(pWeapon);
     }
 
@@ -59,10 +70,78 @@ public class CharacterModel : CObjectBase
         p_Event_OnChange_Armor.DoNotify(pArmor);
     }
 
+
+    public void DoStartAI()
+    {
+        StopCoroutine(nameof(CoAILogic));
+        StartCoroutine(nameof(CoAILogic));
+    }
+
+
+    // ====================================================================
+
     protected override void OnAwake()
     {
         base.OnAwake();
 
         pStat?.DoInit();
     }
+
+    // ====================================================================
+
+    IEnumerator CoAILogic()
+    {
+        yield return null;
+
+        while (true)
+        {
+            yield return StartCoroutine(CoAIState_OnScanTarget());
+
+            yield return null;
+
+            yield return StartCoroutine(CoAIState_OnChase_ForAttack());
+        }
+    }
+
+    IEnumerator CoAIState_OnScanTarget()
+    {
+        _pPhysicsTrigger.GetComponent<SphereCollider>().radius = pStat.fDetectArea;
+        _pPhysicsTrigger.DoClear_InColliderList();
+
+        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0)
+        {
+            yield return null;
+        }
+
+        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
+        p_Event_OnSetTarget.DoNotify(listCollider[0].gameObject);
+    }
+
+
+    public float fDistance_ForDebug;
+
+    IEnumerator CoAIState_OnChase_ForAttack()
+    {
+        while (true)
+        {
+            while (_pPhysicsTrigger.GetColliderList_3D_Enter().Count == 0)
+            {
+                yield return null;
+            }
+
+            Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
+            fDistance_ForDebug = Vector3.Distance(transform.position, pTransformTarget.position);
+            if (GetCurrentWeapon().DoCheck_IsReadyToFire(fDistance_ForDebug) &&
+                Physics.Raycast(transform.position, pTransformTarget.position, pTerrainLayer) == false)
+            {
+                List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
+                for (int i = 0; i < listCollider.Count; i++)
+                    DoAttack_Melee(listCollider[i].gameObject);
+                break;
+            }
+
+            yield return null;
+        }
+    }
+
 }
