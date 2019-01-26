@@ -83,8 +83,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void Event_OnClickPlayerButton()
     {
-        Debug.Log("Event_OnClickPlayerButton");
-
         p_bIsWaitAction = true;
     }
 

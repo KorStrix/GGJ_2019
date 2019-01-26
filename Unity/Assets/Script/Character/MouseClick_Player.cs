@@ -37,7 +37,8 @@ public class MouseClick_Player : CObjectBase, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log(name + " OnPointerClick");
+        if (HomeKeeperGameManager.instance.p_bIsWaitAction)
+            return;
 
         var pTweenButton = HomeKeeperGameManager.instance.p_pRadialPosition_Button;
         pTweenButton.gameObject.SetActive(true);
