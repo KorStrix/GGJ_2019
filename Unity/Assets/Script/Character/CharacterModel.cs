@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterModel : MonoBehaviour
+public class CharacterModel : CObjectBase
 {
     public CObserverSubject<Weapon> p_Event_OnChange_Weapon { get; private set; } = new CObserverSubject<Weapon>();
     public CObserverSubject<Armor> p_Event_OnChange_Armor { get; private set; } = new CObserverSubject<Armor>();
@@ -13,7 +13,6 @@ public class CharacterModel : MonoBehaviour
 
     // -----------------------
 
-    [GetComponentInChildren]
     Weapon _pWeapon_Hands = null;
 
     private Weapon _pWeaponEquied;
@@ -41,4 +40,16 @@ public class CharacterModel : MonoBehaviour
         _listJewel.Add(jewel);
     }
 
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        if(_pWeapon_Hands == null)
+        {
+            CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
+            _pWeapon_Hands = CManagerPooling_InResources<string, Weapon>.instance.DoPop("Fist");
+            _pWeapon_Hands.transform.SetParent(transform);
+            _pWeapon_Hands.transform.localPosition = Vector3.zero;
+        }
+    }
 }
