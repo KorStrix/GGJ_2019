@@ -74,6 +74,9 @@ public class CharacterModel : CObjectBase
     {
         base.OnAwake();
 
+        //Warning
+        pStat = new Stats();
+
         pStat.DoInit();
     }
 
@@ -86,7 +89,7 @@ public class CharacterModel : CObjectBase
 
         if (UnityEngine.Random.Range(0f, 1f) > pStat.GetFinalHitRatio(posDistance))
         {
-            FloatingTextController.CreateFloatingText("!감나빗", pos);
+            FloatingTextController.CreateFloatingText("! 감 나 빗", pos);
             return 0f;
         }
 

@@ -10,7 +10,7 @@ public class Stats : ScriptableObject
     public float charHP;//HP;
     public float charStr;//strength;
     public float charDex;//dexterity;
-    public float speed;
+    public float speed = 100f;
     public float charLuk;//luck;
     public float fDetectArea;
 
