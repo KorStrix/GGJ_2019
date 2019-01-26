@@ -100,7 +100,8 @@ public class AIInput : CObjectBase
 
     IEnumerator CoAIState_OnScanTarget()
     {
-        _pPhysicsTrigger.GetComponent<SphereCollider>().radius = _pStat_Mine.fDetectArea;
+        SphereCollider pSphereCollider = _pPhysicsTrigger.GetComponent<SphereCollider>();
+        pSphereCollider.radius = _pStat_Mine.fDetectArea;
         _pPhysicsTrigger.enabled = true;
         _pPhysicsTrigger.DoClear_InColliderList();
 
@@ -117,7 +118,8 @@ public class AIInput : CObjectBase
 
     IEnumerator CoAIState_OnChase_ForAttack()
     {
-        _pPhysicsTrigger.GetComponent<SphereCollider>().radius = _pStat_Mine.fDetectArea;
+        SphereCollider pSphereCollider = _pPhysicsTrigger.GetComponent<SphereCollider>();
+        pSphereCollider.radius = _pStat_Mine.fDetectArea;
         _pPhysicsTrigger.enabled = true;
         _pPhysicsTrigger.DoClear_InColliderList();
 

@@ -28,9 +28,13 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         Text_TimeScale,
     }
 
-    public enum ESprite
+    public enum EImage
     {
         Image_HP_Fill,
+
+        Image_Icon_Weapon,
+        Image_Icon_Armor,
+        Image_Icon_Helmet,
     }
 
     public enum EButton
@@ -48,6 +52,8 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
     Dictionary<EText, UnityEngine.UI.Text> _mapText = new Dictionary<EText, UnityEngine.UI.Text>();
     [GetComponentInChildren]
     Dictionary<EButton, UnityEngine.UI.Button> _mapButton = new Dictionary<EButton, UnityEngine.UI.Button>();
+    [GetComponentInChildren]
+    Dictionary<EImage, UnityEngine.UI.Image> _mapImage = new Dictionary<EImage, UnityEngine.UI.Image>();
 
     // ========================================================================== //
 
@@ -79,6 +85,39 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         CManagerTimeScale.instance.p_Event_OnChangeTimeScale.Subscribe += P_Event_OnChangeTimeScale_Subscribe;
 
         HomeKeeperGameManager.instance.p_Event_OnAction.Subscribe += P_Event_OnAction_Subscribe;
+
+        PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
+        CharacterModel pCharacterModel = pPlayerInput.GetComponent<CharacterModel>();
+        pCharacterModel.EventOnAwake();
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe_And_Listen_CurrentData += P_Event_OnChangeStatus_Subscribe_And_Listen_CurrentData;
+        pCharacterModel.p_Event_OnChange_Weapon.Subscribe += P_Event_OnChange_Weapon_Subscribe;
+        pCharacterModel.p_Event_OnChange_Armor.Subscribe += P_Event_OnChange_Armor_Subscribe;
+    }
+
+    private void P_Event_OnChange_Weapon_Subscribe(Weapon pWeapon)
+    {
+        Debug.Log(name + " 이미지 들어오면 작업해야함", this);
+        //if (pWeapon != null)
+        //    _mapImage[EImage.Image_Icon_Weapon].sprite = pWeapon.GetComponentInChildren<SpriteRenderer>().sprite;
+        //else
+        //    _mapImage[EImage.Image_Icon_Weapon].sprite = null;
+
+    }
+
+    private void P_Event_OnChange_Armor_Subscribe(Armor pArmor)
+    {
+        Debug.Log(name + " 이미지 들어오면 작업해야함", this);
+        //if (pArmor != null)
+        //    _mapImage[EImage.Image_Icon_Weapon].sprite = pArmor.GetComponentInChildren<SpriteRenderer>().sprite;
+        //else
+        //    _mapImage[EImage.Image_Icon_Weapon].sprite = null;
+    }
+
+    private void P_Event_OnChangeStatus_Subscribe_And_Listen_CurrentData(Stats sStats)
+    {
+        DoEditText(EText.Text_Stat_S, sStats.strength.ToString());
+        DoEditText(EText.Text_Stat_D, sStats.dexterity.ToString());
+        DoEditText(EText.Text_Stat_L, sStats.luck.ToString());
     }
 
     /* protected - [abstract & virtual]         */
