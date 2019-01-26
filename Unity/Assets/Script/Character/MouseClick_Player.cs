@@ -37,7 +37,7 @@ public class MouseClick_Player : CObjectBase, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        var tween = GameObject.Find("RadialButton").GetComponent<CTweenPosition_Radial>();
+        var tween = GetComponent<CTweenPosition_Radial>();
         tween?.DoSetTarget(gameObject);
         tween?.DoPlayTween_Forward();
         
