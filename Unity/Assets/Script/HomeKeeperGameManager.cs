@@ -43,7 +43,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     Transform _pTransform_CurrentTarget = null;
 
     CManagerTimeScale _pManagerTimeScale;
-    bool _bIsWaitAction;
     int _iJewelCount_Total;
     int _iJewelCount_Current;
 
