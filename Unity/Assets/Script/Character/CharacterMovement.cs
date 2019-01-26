@@ -43,7 +43,7 @@ public class CharacterMovement : CObjectBase
         if (_pCharacterModel.pStat == null)
             return;
 
-        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.pStat.speed * Time.deltaTime;
+        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.pStat.fSpeed * Time.deltaTime;
         p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f, vecDesireDirection);
     }
 

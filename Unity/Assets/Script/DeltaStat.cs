@@ -6,7 +6,7 @@ using UnityEditor;
 
 [System.Serializable]
 public class DeltaStat {
-    public StatType type;
+    public HomeKeeperBuffType type;
     public int value;
 	
 }

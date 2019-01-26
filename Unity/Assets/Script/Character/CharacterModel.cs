@@ -41,12 +41,12 @@ public class CharacterModel : CObjectBase
         if (target == null)
             return;
 
-        float damage = pStat.GetMeleeWeaponDamage(pWeaponCurrent.Damage);
-        target.pStat.HP = Mathf.Clamp(CalcDamage(damage, pObjectTarget), 0f, pStat.finalHP);
+        int damage = (int)pWeaponCurrent.Damage;
+        target.pStat.iHP -= damage;
 
         target._pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
         target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit");
-        if (target.pStat.HP <= 0f)
+        if (target.pStat.iHP <= 0f)
         {
             //Dead Event
         }
@@ -65,7 +65,6 @@ public class CharacterModel : CObjectBase
     {
         p_pWeapon_Equiped = pWeapon;
 
-        pStat?.SetItemStat(pWeapon, null);
         pWeapon.DoEquipWeapon(true);
         //pStat.DoIncrease_Stat(pWeapon.effects);
 
@@ -75,7 +74,6 @@ public class CharacterModel : CObjectBase
     public void GetArmor(Armor pArmor)
     {
         p_pArmor_Equiped = pArmor;
-        pStat?.SetItemStat(null, pArmor);
         //pStat.DoIncrease_Stat(pArmor.effects);
 
         p_Event_OnChange_Armor.DoNotify(pArmor);
@@ -86,28 +84,5 @@ public class CharacterModel : CObjectBase
         base.OnAwake();
 
         pStat?.DoInit();
-    }
-
-    public float CalcDamage(float hp, GameObject target)
-    {
-        float damage = hp;
-        Vector3 pos = this.transform.position;
-        float posDistance = Vector3.Distance(pos, target.transform.position);
-        // pos = Camera.main.WorldToScreenPoint(pos);
-
-        if (UnityEngine.Random.Range(0f, 1f) > pStat.GetFinalHitRatio(posDistance))
-        {
-            //FloatingTextController.CreateFloatingText("! 감 나 빗", pos);
-            return 0f;
-        }
-
-        if (UnityEngine.Random.Range(0f, 1f) < pStat.GetCriticalRatio(target.GetComponent<CharacterModel>(), this))
-        {
-            damage *= 1.5f;
-        }
-        
-        string indicator = damage.ToString();
-        FloatingTextController.CreateFloatingText(indicator, pos);
-        return damage;
     }
 }

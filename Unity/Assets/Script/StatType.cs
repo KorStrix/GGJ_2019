@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum StatType {
-BASEHP,STR, DEX, SPEED, LUCK, HP, DAMAGE, DEFENCE, ACCURACY, CRITCHANCE, EVASION, CURRENTHP , HANDGUNAMMO, RIFLEAMMO
-
+public enum HomeKeeperBuffType
+{
+   HP_Recovery, Armor, Ammo,
 }
