@@ -30,7 +30,7 @@ public class PlayerItemCollector : MonoBehaviour {
         Weapon pWeapon = CManagerPooling_InResources<string, Weapon>.instance.DoPop(strResourceName);
         pWeapon.transform.SetParent(transform);
         pWeapon.transform.localPosition = Vector3.zero;
-        EventOnGetWeapon(pWeapon);
+        EventOnGetWeapon?.Invoke(pWeapon);
         WeaponHeld = pWeapon;
         return pWeapon;
     }
@@ -78,7 +78,7 @@ public class PlayerItemCollector : MonoBehaviour {
             if (WeaponHeld != fist)
                 WeaponHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
             WeaponHeld = h.GetComponent<Weapon>();
-            EventOnGetWeapon(WeaponHeld);
+            EventOnGetWeapon?.Invoke(WeaponHeld);
             break;
         case "Armor":
             var h2 = other.GetComponent<Holdable>();
