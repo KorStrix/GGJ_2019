@@ -16,7 +16,7 @@ using Pathfinding;
 /// 
 /// </summary>
 [RequireComponent(typeof(AIPath))]
-public class AIInput : CObjectBase
+public class AIMovement_Input : CObjectBase
 {
     /* const & readonly declaration             */
 
@@ -32,15 +32,9 @@ public class AIInput : CObjectBase
     [GetComponent]
     CharacterMovement _pCharacterMovement = null;
     [GetComponent]
-    CharacterModel _pCharacterModel = null;
-
-    [GetComponent]
     AIPath _pAIPath = null;
-    [GetComponentInChildren]
-    CPhysicsTrigger _pPhysicsTrigger = null;
 
     Transform _pTransformTarget;
-    Stats _pStat_Mine;
     int _iJewelIndex;
 
     // ========================================================================== //
@@ -65,21 +59,6 @@ public class AIInput : CObjectBase
 
     /* protected - Override & Unity API         */
 
-    protected override IEnumerator OnEnableObjectCoroutine()
-    {
-        yield return null;
-
-        _pStat_Mine = GetComponent<CharacterModel>().pStat;
-
-        while(true)
-        {
-            yield return StartCoroutine(CoAIState_OnScanTarget());
-            yield return StartCoroutine(CoAIState_OnChase_ForAttack());
-
-            yield return null;
-        }
-    }
-
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -97,42 +76,6 @@ public class AIInput : CObjectBase
     // ========================================================================== //
 
     #region Private
-
-    IEnumerator CoAIState_OnScanTarget()
-    {
-        SphereCollider pSphereCollider = _pPhysicsTrigger.GetComponent<SphereCollider>();
-        pSphereCollider.radius = _pStat_Mine.fDetectArea;
-        _pPhysicsTrigger.enabled = true;
-        _pPhysicsTrigger.DoClear_InColliderList();
-
-        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0)
-        {
-            yield return null;
-        }
-        _pPhysicsTrigger.enabled = false;
-
-        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Stay();
-        DoSetTarget(listCollider[0].transform);
-    }
-
-
-    IEnumerator CoAIState_OnChase_ForAttack()
-    {
-        SphereCollider pSphereCollider = _pPhysicsTrigger.GetComponent<SphereCollider>();
-        pSphereCollider.radius = _pStat_Mine.fDetectArea;
-        _pPhysicsTrigger.enabled = true;
-        _pPhysicsTrigger.DoClear_InColliderList();
-
-        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0 || _pCharacterModel._pWeapon_Equied.DoCheck_IsReadyToFire() == false)
-        {
-            yield return null;
-        }
-        _pPhysicsTrigger.enabled = false;
-
-        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Stay();
-        _pCharacterModel.DoAttack_Melee(listCollider[0].gameObject);
-    }
-
 
     private void CalculateNextJewel()
     {
@@ -153,6 +96,26 @@ public class AIInput : CObjectBase
         if (bIsNotFind_NextJewel)
         {
             HomeKeeperGameManager.instance.DoGame_Fail();
+
+            //Compo_ExitGate[] arrExitGates = FindObjectsOfType<Compo_ExitGate>();
+            //Vector3 vecTransformPos = transform.position;
+            //float fMinestDistance = float.MaxValue;
+            //Transform pTransform_Closest = null;
+
+            //for(int i = 0; i < arrExitGates.Length; i++)
+            //{
+            //    float fCurrentDistance = Vector3.Distance(vecTransformPos, arrExitGates[i].transform.position);
+            //    if(fCurrentDistance < fMinestDistance)
+            //    {
+            //        fMinestDistance = fCurrentDistance;
+            //        pTransform_Closest = arrExitGates[i].transform;
+            //    }
+            //}
+
+            //if (pTransform_Closest != null)
+            //    DoSetTarget(pTransform_Closest);
+            //else
+            //    Debug.LogError(name + "Not Found Closest Exit Gate", this);
         }
     }
 

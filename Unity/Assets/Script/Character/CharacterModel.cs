@@ -2,66 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CTweenPosition))]
 public class CharacterModel : CObjectBase
 {
     public CObserverSubject<Weapon> p_Event_OnChange_Weapon { get; private set; } = new CObserverSubject<Weapon>();
-    public CObserverSubject<Weapon> p_Event_OnChange_Weapon_Ranged { get; private set; } = new CObserverSubject<Weapon>();
     public CObserverSubject<Armor> p_Event_OnChange_Armor { get; private set; } = new CObserverSubject<Armor>();
-
-    public Weapon _pWeapon_Equied { get; private set; }
-    public Weapon _pWeapon_Equied_Ranged { get; private set; }
-    public Armor _pArmor_Equiped { get; private set; }
 
     // -----------------------
 
     public Stats pStat;
 
-    Weapon _pWeapon_Hands = null;
-
-    [GetComponentInChildren]
-    CTweenPosition _pTweenPos = null;
-
     // -----------------------
 
-    public void DoAttack_Melee(GameObject pObjectTarget)
-    {
-        Weapon pWeaponCurrent = _pWeapon_Equied == null ? _pWeapon_Hands : _pWeapon_Equied;
-        _pTweenPos.DoPlayTween_Forward();
-        pWeaponCurrent.DoFireWeapon();
+    Weapon _pWeapon_Hands = null;
 
-        Debug.Log(name + " DoAttack_Melee pObjectTarget : " + pObjectTarget.name);
+    private Weapon _pWeaponEquied;
+    private Armor _pArmor_Equiped;
+
+    public void DoAttack_Melee()
+    {
+        Weapon pWeaponCurrent = _pWeaponEquied == null ? _pWeapon_Hands : _pWeaponEquied;
+        CManagerEffect.instance.DoPlayEffect(pWeaponCurrent.VisualEffect.ToString(), transform.position);
+
+        Debug.Log("DoAttack_Melee");
     }
 
-    public void DoAttack_Range(GameObject pObjectTarget)
+    public void DoAttack_Gun()
     {
-        Weapon pWeaponCurrent = _pWeapon_Equied_Ranged == null ? _pWeapon_Hands : _pWeapon_Equied_Ranged;
-        _pTweenPos.DoPlayTween_Forward();
-        pWeaponCurrent.DoFireWeapon();
+        Weapon pWeaponCurrent = _pWeaponEquied == null ? _pWeapon_Hands : _pWeaponEquied;
+        CManagerEffect.instance.DoPlayEffect(pWeaponCurrent.VisualEffect.ToString(), transform.position);
 
-        Debug.Log(name + " DoAttack_Range pObjectTarget : " + pObjectTarget.name);
+        Debug.Log("DoAttack_Gun");
     }
 
-    public void GetWeapon(Weapon pWeapon)
+    public void GetWeapon(Weapon weapon)
     {
-        _pWeapon_Equied = pWeapon;
-        pStat.DoIncrease_Stat(pWeapon.effects);
-
-        p_Event_OnChange_Weapon.DoNotify(pWeapon);
+        _pWeaponEquied = weapon;
     }
 
-    public void GetArmor(Armor pArmor)
+    public void GetArmor(Armor armor)
     {
-        _pArmor_Equiped = pArmor;
-        pStat.DoIncrease_Stat(pArmor.effects);
-
-        p_Event_OnChange_Armor.DoNotify(pArmor);
-    }
-
-    protected override void OnAwake()
-    {
-        base.OnAwake();
-
-        pStat.DoInit();
+        _pArmor_Equiped = armor;
+        pStat.DoIncrease_Stat(armor.effects);
     }
 }

@@ -147,9 +147,11 @@ public class CPhysicsTrigger : CObjectBase
     public List<Collider2D> GetColliderList_2D_Stay() { return _listCollider2D_Stay; }
     public List<Collider2D> GetColliderList_2D_Exit() { return _listCollider2D_Exit; }
 
-    public List<Collider> GetColliderList_3D_Enter() { return _listCollider3D_Enter; }
-    public List<Collider> GetColliderList_3D_Stay() { return _listCollider3D_Stay; }
-    public List<Collider> GetColliderList_3D_Exit() { return _listCollider3D_Exit; }
+
+    public List<Collider> GetList_InCollider3D()
+    {
+        return _listCollider3D_Enter;
+    }
 
     public bool DoCheck_IsInner(Collider2D pCollider)
     {

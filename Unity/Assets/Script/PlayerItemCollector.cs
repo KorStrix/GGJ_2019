@@ -22,34 +22,17 @@ public class PlayerItemCollector : MonoBehaviour {
     Rigidbody characterRigid;
     Weapon fist;
 
-    // =======================================================================
-
-    public Weapon DoEquipWeapon(string strResourceName)
-    {
-        CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
-        Weapon pWeapon = CManagerPooling_InResources<string, Weapon>.instance.DoPop(strResourceName);
-        pWeapon.transform.SetParent(transform);
-        pWeapon.transform.localPosition = Vector3.zero;
-        EventOnGetWeapon?.Invoke(pWeapon);
-        WeaponHeld = pWeapon;
-        return pWeapon;
+    private void Awake() {
+      
     }
-
-    public Armor DoEquipArmor(string strResourceName) {
-        CManagerPooling_InResources<string, Armor>.instance.p_strResourcesPath = "Armor/";
-        Armor pArmor = CManagerPooling_InResources<string, Armor>.instance.DoPop(strResourceName);
-        pArmor.transform.SetParent(transform);
-        pArmor.transform.localPosition = Vector3.zero;
-        EventOnGetArmor(pArmor);
-        ArmorHeld = pArmor;
-        return pArmor;
-    }
-
     // Use this for initialization
-    void Start ()
-    {
+    void Start () {
+        CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
+        fist = CManagerPooling_InResources<string, Weapon>.instance.DoPop("Fist");
+        fist.transform.SetParent(transform);
+        fist.transform.localPosition = Vector3.zero;
         characterRigid = GetComponentInParent<Rigidbody>();
-        WeaponHeld = fist = DoEquipWeapon("Fist");
+        WeaponHeld = fist;
         //Search for Character
         var ch = GetComponentInParent<CharacterModel>();
         if (ch != null)
@@ -62,6 +45,11 @@ public class PlayerItemCollector : MonoBehaviour {
         EventOnGetWeapon?.Invoke(fist);
     }
 
+
+    // Update is called once per frame
+    void Update () {
+		
+	}
 
     /// <summary>
     /// 아이템을 이곳에서 줍습니다.
@@ -78,7 +66,7 @@ public class PlayerItemCollector : MonoBehaviour {
             if (WeaponHeld != fist)
                 WeaponHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
             WeaponHeld = h.GetComponent<Weapon>();
-            EventOnGetWeapon?.Invoke(WeaponHeld);
+            EventOnGetWeapon(WeaponHeld);
             break;
         case "Armor":
             var h2 = other.GetComponent<Holdable>();
