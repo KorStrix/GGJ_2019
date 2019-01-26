@@ -1,7 +1,7 @@
 ﻿#region Header
 /*	============================================
  *	작성자 : Strix
- *	작성일 : 2019-01-26 오전 3:29:23
+ *	작성일 : 2019-01-26 오전 7:39:54
  *	개요 : 
    ============================================ */
 #endregion Header
@@ -9,11 +9,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 
 /// </summary>
-public class CharacterMovement : CObjectBase
+public class MouseClick_Enemy : CObjectBase, IPointerClickHandler
 {
     /* const & readonly declaration             */
 
@@ -21,28 +22,18 @@ public class CharacterMovement : CObjectBase
 
     /* public - Field declaration            */
 
-    public CObserverSubject<bool> p_Event_OnMovePlayer { get; private set; } = new CObserverSubject<bool>();
 
     /* protected & private - Field declaration         */
 
-    [GetComponent]
-    CharacterModel _pCharacterModel = null;
-    [GetComponent]
-    Rigidbody _pRigidbody = null;
 
     // ========================================================================== //
 
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    public void DoMove(Vector3 vecDesireDirection)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        //Vector3 vecPos = _pTransform.position + new Vector3(fSpeedX, 0.0f, fSpeedZ);
-        //_pRigidbody.MovePosition(vecPos);
-
-
-        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.pStat.speed * Time.deltaTime;
-        p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f);
+        HomeKeeperGameManager.instance.Event_OnAction(gameObject);
     }
 
     // ========================================================================== //

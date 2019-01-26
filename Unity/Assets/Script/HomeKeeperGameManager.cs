@@ -82,7 +82,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void Event_OnActionFinish()
     {
-        _pTransform_CurrentTarget.SetActive(false);
+        _pTransform_CurrentTarget?.SetActive(false);
     }
 
     // ========================================================================== //
@@ -94,7 +94,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         base.OnAwake();
 
         _pManagerTimeScale = CManagerTimeScale.instance;
-        _pTransform_CurrentTarget.SetActive(false);
+        _pTransform_CurrentTarget?.SetActive(false);
 
         if (UIManager.instance == null)
         {
@@ -164,7 +164,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
             pObjectFollow.DoSetFollow(true);
         }
 
-        AstarPath.active.Scan();
+        AstarPath.active?.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
     }
 
