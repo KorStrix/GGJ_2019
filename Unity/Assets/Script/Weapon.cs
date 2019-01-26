@@ -41,6 +41,11 @@ public class Weapon : CObjectBase {
     /// </summary>
     public CEffect VisualEffect;
 
+    /// <summary>
+    /// 발사 시 오디오
+    /// </summary>
+    public AudioClip ShootClip;
+
 
     public Sprite p_pSprite_OnUI { get { return _pSprite_OnDropImage.sprite; } }
 
