@@ -32,6 +32,7 @@ public class Spawner_Jewel : CObjectBase
     /* public - Field declaration            */
 
     public EJewelType p_eItemType;
+    public Jewel p_pJewel { get; private set; }
 
     /* protected & private - Field declaration         */
 
@@ -65,6 +66,8 @@ public class Spawner_Jewel : CObjectBase
             GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Jewel/" + p_eItemType.ToString_GarbageSafe())) as GameObject;
             pObjectPrefab.transform.SetParent(transform);
             pObjectPrefab.transform.DoResetTransform();
+
+            p_pJewel = pObjectPrefab.GetComponent<Jewel>();
         }
     }
 

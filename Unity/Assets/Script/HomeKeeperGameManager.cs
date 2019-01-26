@@ -38,6 +38,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     
     CManagerTimeScale _pManagerTimeScale;
     bool _bIsWaitAction;
+    int _iJewelCount_Total;
+    int _iJewelCount_Current;
 
     // ========================================================================== //
 
@@ -46,7 +48,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void DoLose_Jewel()
     {
-
+        if (--_iJewelCount_Current == 0)
+            DoGame_Fail();
     }
 
     public void DoGame_Start()
@@ -172,6 +175,16 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
         AstarPath.active?.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
+
+        Spawner_Jewel[] arrJewelSpawn = FindObjectsOfType<Spawner_Jewel>();
+        _iJewelCount_Total = 0;
+        for(int i = 0; i < arrJewelSpawn.Length; i++)
+        {
+            if (arrJewelSpawn[i].gameObject != null && arrJewelSpawn[i].gameObject.activeSelf)
+                _iJewelCount_Total++;
+        }
+
+        _iJewelCount_Current = _iJewelCount_Total;
     }
 
     private void P_Event_OnClickButton_Subscribe(Panel_Idle.EButton eButtonName)

@@ -25,7 +25,7 @@ public class AIMovement_Input : CObjectBase
     /* public - Field declaration            */
 
     [SerializeField]
-    List<Jewel> _listJewel;
+    List<Spawner_Jewel> _listJewel;
 
     /* protected & private - Field declaration         */
 
@@ -42,7 +42,7 @@ public class AIMovement_Input : CObjectBase
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    public void DoInitJewelList(List<Jewel> listJewel)
+    public void DoInitJewelList(List<Spawner_Jewel> listJewel)
     {
         _iJewelIndex = 0;
         _listJewel = listJewel;
@@ -82,14 +82,14 @@ public class AIMovement_Input : CObjectBase
         bool bIsNotFind_NextJewel = true;
         while (_iJewelIndex < _listJewel.Count)
         {
-            if (_listJewel[_iJewelIndex].bIsStolen == false)
+            if (_listJewel[_iJewelIndex].p_pJewel.bIsStolen == false)
             {
                 DoSetTarget(_listJewel[_iJewelIndex++].transform);
                 bIsNotFind_NextJewel = false;
             }
         }
 
-        if (bIsNotFind_NextJewel == false)
+        if (bIsNotFind_NextJewel)
         {
             HomeKeeperGameManager.instance.DoGame_Fail();
 

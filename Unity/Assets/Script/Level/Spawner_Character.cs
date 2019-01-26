@@ -29,7 +29,7 @@ public class Spawner_Character : CObjectBase
 
     /* public - Field declaration            */
 
-    public List<Jewel> listJewel = new List<Jewel>();
+    public List<Spawner_Jewel> listJewel = new List<Spawner_Jewel>();
 
     public ECharacterType p_eCharacterType;
 
