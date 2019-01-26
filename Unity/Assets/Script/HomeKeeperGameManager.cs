@@ -149,7 +149,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     IEnumerator CoGameStart()
     {
         _bIsWaitAction = false;
-        CFollowObject pObjectFollow = FindObjectOfType<CFollowObject>();
 
         yield return null;
 
@@ -157,9 +156,14 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         Vector3 vecPlayerPos = pPlayerInput.transform.position;
         vecPlayerPos.y = 10f;
 
-        pObjectFollow.transform.position = vecPlayerPos;
-        pObjectFollow.DoInitTarget(pPlayerInput.transform);
-        pObjectFollow.DoSetFollow(true);
+        CFollowObject pObjectFollow = FindObjectOfType<CFollowObject>();
+        if(pObjectFollow != null)
+        {
+            pObjectFollow.transform.position = vecPlayerPos;
+            pObjectFollow.DoInitTarget(pPlayerInput.transform);
+            pObjectFollow.DoSetFollow(true);
+        }
+
         AstarPath.active.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
     }
