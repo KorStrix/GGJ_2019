@@ -12,6 +12,7 @@ public class Stats : ScriptableObject
     public float dexterity;
     public float speed;
     public float luck;
+    public float fDetectArea;
 
     SecondStats _pSecondStat;
 
@@ -19,6 +20,8 @@ public class Stats : ScriptableObject
     {
         if (_pSecondStat == null)
             _pSecondStat = new SecondStats();
+
+        p_Event_OnChangeStatus.DoNotify(this);
     }
 
     public SecondStats GetSecondStat(Weapon pCurrentWeapon, Armor pCurrentArmor)
