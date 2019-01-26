@@ -84,7 +84,7 @@ public class Spawner_Character : CObjectBase
     {
         base.OnAwake();
 
-        DoSpawn_Character(false);
+        DoSpawn_Character(Application.isPlaying);
     }
 
 #if UNITY_EDITOR

@@ -215,7 +215,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         _iJewelCount_Current = _iJewelCount_Total;
     }
 
-    private void P_Event_OnMovePlayer_Subscribe(bool bMovement)
+    private void P_Event_OnMovePlayer_Subscribe(bool bMovement, Vector3 vecMove)
     {
         if (isPaused) return;
         float fCurrentTimeScale = _pManagerTimeScale.p_fCurrentTimeScale;
