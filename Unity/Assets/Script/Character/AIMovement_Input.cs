@@ -95,7 +95,7 @@ public class AIMovement_Input : CObjectBase
         }
         else
         {
-            _pCharacterMovement.DoLookAt(_pAIPath.desiredVelocity.normalized);
+            _pCharacterMovement.DoLookAt((_pTransformTarget.position - transform.position).normalized);
         }
     }
 
