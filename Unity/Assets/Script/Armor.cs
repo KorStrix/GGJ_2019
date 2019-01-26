@@ -13,8 +13,9 @@ public class Armor : MonoBehaviour {
     /// <summary>
     /// UI용 스프라이트
     /// </summary>
-    public Sprite UISprite;
+    public Sprite p_pSprite_OnUI { get { return _pSprite_OnDropImage.sprite; } }
 
+    [GetComponentInChildren("ItemSprite")] public SpriteRenderer _pSprite_OnDropImage = null;
     /// <summary>
     /// 방어구 타입
     /// </summary>

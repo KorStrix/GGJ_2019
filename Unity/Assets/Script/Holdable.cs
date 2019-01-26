@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Holdable : MonoBehaviour {
-    
+public class Holdable : CObjectBase {
+
+    public delegate void OnAttach(Transform collector);
+    public delegate void OnDetach();
+
+    public event OnAttach EventOnAttach;
+    public event OnDetach EventOnDetach;
+
+
     [SerializeField] float nonInteractTime = 1f;
     const float SPEEDSCALE = 3f;
 
-    [SerializeField] Renderer Itemform;
+    [GetComponentInChildren("mask")] Renderer Itemform;
+    
     // Use this for initialization
     void Start () {
 		
@@ -25,6 +33,7 @@ public class Holdable : MonoBehaviour {
     /// </summary>
     /// <param name="character"></param>
     public void Attach(Transform character) {
+        EventOnAttach?.Invoke(character);
         Debug.Log("Attach Weapon");
         transform.parent = character;
         transform.localPosition = Vector3.zero;
@@ -38,6 +47,7 @@ public class Holdable : MonoBehaviour {
     /// 이 오브젝트를 바닥에 내려놓습니다. 무기 아이템 스프라이트가 보입니다.
     /// </summary>
     public void Detach(Vector3 speed) {
+        EventOnDetach?.Invoke();
         Debug.Log("Detach!");
         transform.SetParent(null, true);
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;

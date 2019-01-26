@@ -44,8 +44,8 @@ public class Weapon : CObjectBase {
 
     public Sprite p_pSprite_OnUI { get { return _pSprite_OnDropImage.sprite; } }
 
-    public SpriteRenderer _pSprite_OnDropImage = null;
-    public SpriteRenderer _pSprite_OnHeldSprite = null;
+    [GetComponentInChildren("ItemSprite")]public SpriteRenderer _pSprite_OnDropImage = null;
+    //public SpriteRenderer _pSprite_OnHeldSprite = null;
 
     public bool DoCheck_IsReadyToFire(float fDistance)
     {
@@ -59,19 +59,16 @@ public class Weapon : CObjectBase {
 
     public void DoEquipWeapon(bool bIsEquip)
     {
-        if(_pSprite_OnDropImage != null)
-            _pSprite_OnDropImage.SetActive(!bIsEquip);
+       
 
-        if(_pSprite_OnHeldSprite != null)
-            _pSprite_OnHeldSprite.SetActive(bIsEquip);
+       
     }
 
     protected override void OnAwake()
     {
         base.OnAwake();
 
-        if(_pSprite_OnHeldSprite != null)
-            _pSprite_OnHeldSprite.SetActive(false);
+     
     }
 
     public override void OnUpdate()
