@@ -54,7 +54,8 @@ public class Regist_HPBar : CObjectBase
     {
         base.OnDisableObject();
 
-        UIManager.instance.Return_HealthBar(_pHealthBar);
+        if(UIManager.instance != null)
+            UIManager.instance.Return_HealthBar(_pHealthBar);
     }
 
     /* protected - [abstract & virtual]         */

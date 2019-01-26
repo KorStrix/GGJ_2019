@@ -22,7 +22,7 @@ public class CharacterModel : CObjectBase
 
     public Stats pStat;
 
-    public LayerMask pTerrainLayer;
+    public LayerMask pTargetLayer;
 
     Weapon _pWeapon_Equiped;
     Weapon _pWeapon_Fist;
@@ -108,19 +108,27 @@ public class CharacterModel : CObjectBase
         _pPhysicsTrigger.GetComponent<SphereCollider>().radius = pStat.fDetectArea;
         _pPhysicsTrigger.DoClear_InColliderList();
 
-        while (_pPhysicsTrigger.GetColliderList_3D_Enter().Count == 0)
+        while(true)
         {
+            while (_pPhysicsTrigger.GetColliderList_3D_Enter().Count == 0)
+            {
+                yield return null;
+            }
+
+            Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
+            RaycastHit[] arrHit = Physics.RaycastAll(transform.position, (pTransformTarget.position - transform.position).normalized, pTargetLayer);
+            for(int i = 0; i < arrHit.Length; i++)
+            {
+                CharacterModel pCharacterModel = arrHit[i].transform.GetComponent<CharacterModel>();
+                if(pCharacterModel && pCharacterModel != this)
+                {
+                    p_Event_OnSetTarget.DoNotify(pCharacterModel.gameObject);
+                    yield break;
+                }
+            }
+
             yield return null;
         }
-
-        Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
-        while (Physics.Raycast(transform.position, pTransformTarget.position, pTerrainLayer))
-        {
-            yield return null;
-        }
-
-        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
-        p_Event_OnSetTarget.DoNotify(pTransformTarget.gameObject);
     }
 
 
@@ -135,15 +143,22 @@ public class CharacterModel : CObjectBase
                 yield return null;
             }
 
-            Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
-            fDistance_ForDebug = Vector3.Distance(transform.position, pTransformTarget.position);
-            if (GetCurrentWeapon().DoCheck_IsReadyToFire(fDistance_ForDebug) &&
-                Physics.Raycast(transform.position, pTransformTarget.position, pTerrainLayer) == false)
+            List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
+            for (int i = 0; i < listCollider.Count; i++)
             {
-                List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
-                for (int i = 0; i < listCollider.Count; i++)
-                    DoAttack_Melee(listCollider[i].gameObject);
-                break;
+                if(listCollider[i].GetComponent<CharacterModel>() != null)
+                {
+                    Transform pTransformTarget = listCollider[i].transform;
+                    fDistance_ForDebug = Vector3.Distance(transform.position, pTransformTarget.position);
+                    if (GetCurrentWeapon().DoCheck_IsReadyToFire(fDistance_ForDebug))
+                    {
+                        RaycastHit[] arrHit = Physics.RaycastAll(transform.position, (pTransformTarget.position - transform.position).normalized, pTargetLayer);
+                        for (int j = 0; j < arrHit.Length; j++)
+                            DoAttack_Melee(arrHit[j].transform.gameObject);
+
+                        yield break;
+                    }
+                }
             }
 
             yield return null;
