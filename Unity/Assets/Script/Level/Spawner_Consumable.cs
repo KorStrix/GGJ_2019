@@ -54,7 +54,7 @@ public class Spawner_Consumable : CObjectBase
             {
                 DestroyImmediate(pChildObject);
             }
-            else if(pChildObject.name.Contains(p_eItemType.ToString_GarbageSafe()))
+            else if(pChildObject.name.Contains(p_eItemType.ToString_GarbageSafe()) == false)
             {
                 DestroyImmediate(pChildObject);
             }
@@ -76,7 +76,7 @@ public class Spawner_Consumable : CObjectBase
     {
         base.OnAwake();
 
-        DoSpawn_Consumable(true);
+        DoSpawn_Consumable(false);
     }
 
 #if UNITY_EDITOR

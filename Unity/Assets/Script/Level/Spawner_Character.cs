@@ -54,7 +54,7 @@ public class Spawner_Character : CObjectBase
             {
                 DestroyImmediate(pChildObject);
             }
-            else if(pChildObject.name.Contains(p_eCharacterType.ToString_GarbageSafe()))
+            else if(pChildObject.name.Contains(p_eCharacterType.ToString_GarbageSafe()) == false)
             {
                 DestroyImmediate(pChildObject);
             }
@@ -80,7 +80,7 @@ public class Spawner_Character : CObjectBase
     {
         base.OnAwake();
 
-        DoSpawn_Character(true);
+        DoSpawn_Character(false);
     }
 
 #if UNITY_EDITOR
