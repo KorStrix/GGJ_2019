@@ -44,6 +44,11 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
+    public void DoLose_Jewel()
+    {
+
+    }
+
     public void DoGame_Start()
     {
         StartCoroutine(CoGameStart());
@@ -63,6 +68,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     {
         _pManagerTimeScale.DoSetTimeScale_Fade(1f, 1f);
     }
+
 
 
     public void Event_OnAction(GameObject pObject)

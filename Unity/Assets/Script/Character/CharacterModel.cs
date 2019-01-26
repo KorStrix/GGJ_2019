@@ -17,7 +17,6 @@ public class CharacterModel : CObjectBase
 
     private Weapon _pWeaponEquied;
     private Armor _pArmor_Equiped;
-    private List<Jewel> _listJewel = new List<Jewel>();
 
     public void DoAttack_Melee()
     {
@@ -48,13 +47,18 @@ public class CharacterModel : CObjectBase
     
     public void GetJewel(Jewel jewel)
     {
-        _listJewel.Add(jewel);
     }
 
     protected override void OnAwake()
     {
         base.OnAwake();
 
-       
+        if(_pWeapon_Hands == null)
+        {
+            CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
+            _pWeapon_Hands = CManagerPooling_InResources<string, Weapon>.instance.DoPop("Fist");
+            _pWeapon_Hands.transform.SetParent(transform);
+            _pWeapon_Hands.transform.localPosition = Vector3.zero;
+        }
     }
 }

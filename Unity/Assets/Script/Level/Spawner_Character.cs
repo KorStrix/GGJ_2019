@@ -29,6 +29,8 @@ public class Spawner_Character : CObjectBase
 
     /* public - Field declaration            */
 
+    public List<Jewel> listJewel = new List<Jewel>();
+
     public ECharacterType p_eCharacterType;
 
     /* protected & private - Field declaration         */
@@ -63,6 +65,10 @@ public class Spawner_Character : CObjectBase
             GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Character/" + p_eCharacterType.ToString_GarbageSafe())) as GameObject;
             pObjectPrefab.transform.SetParent(transform);
             pObjectPrefab.transform.DoResetTransform();
+
+            AIMovement_Input pAIMovementInput = pObjectPrefab.GetComponent<AIMovement_Input>();
+            if (pAIMovementInput != null)
+                pAIMovementInput.DoInitJewelList(listJewel);
         }
     }
 

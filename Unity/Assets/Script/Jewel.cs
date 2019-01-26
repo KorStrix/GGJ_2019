@@ -6,4 +6,6 @@ public class Jewel : MonoBehaviour {
 
     public string Name;
     public float Value;
+
+    public bool bIsStolen;
 }

@@ -24,6 +24,8 @@ public class AIMovement_Input : CObjectBase
 
     /* public - Field declaration            */
 
+    [SerializeField]
+    List<Jewel> _listJewel;
 
     /* protected & private - Field declaration         */
 
@@ -33,11 +35,20 @@ public class AIMovement_Input : CObjectBase
     AIPath _pAIPath = null;
 
     Transform _pTransformTarget;
+    int _iJewelIndex;
 
     // ========================================================================== //
 
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
+
+    public void DoInitJewelList(List<Jewel> listJewel)
+    {
+        _iJewelIndex = 0;
+        _listJewel = listJewel;
+
+        CalculateNextJewel();
+    }
 
     public void DoSetTarget(Transform pTransformTarget)
     {
@@ -65,6 +76,44 @@ public class AIMovement_Input : CObjectBase
     // ========================================================================== //
 
     #region Private
+
+    private void CalculateNextJewel()
+    {
+        bool bIsNotFind_NextJewel = true;
+        while (_iJewelIndex < _listJewel.Count)
+        {
+            if (_listJewel[_iJewelIndex].bIsStolen == false)
+            {
+                DoSetTarget(_listJewel[_iJewelIndex++].transform);
+                bIsNotFind_NextJewel = false;
+            }
+        }
+
+        if (bIsNotFind_NextJewel == false)
+        {
+            HomeKeeperGameManager.instance.DoGame_Fail();
+
+            //Compo_ExitGate[] arrExitGates = FindObjectsOfType<Compo_ExitGate>();
+            //Vector3 vecTransformPos = transform.position;
+            //float fMinestDistance = float.MaxValue;
+            //Transform pTransform_Closest = null;
+
+            //for(int i = 0; i < arrExitGates.Length; i++)
+            //{
+            //    float fCurrentDistance = Vector3.Distance(vecTransformPos, arrExitGates[i].transform.position);
+            //    if(fCurrentDistance < fMinestDistance)
+            //    {
+            //        fMinestDistance = fCurrentDistance;
+            //        pTransform_Closest = arrExitGates[i].transform;
+            //    }
+            //}
+
+            //if (pTransform_Closest != null)
+            //    DoSetTarget(pTransform_Closest);
+            //else
+            //    Debug.LogError(name + "Not Found Closest Exit Gate", this);
+        }
+    }
 
     #endregion Private
 }
