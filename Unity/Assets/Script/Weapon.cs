@@ -32,6 +32,7 @@ public class Weapon : MonoBehaviour {
     /// 무기의 쿨타임
     /// </summary>
     public float Cooltime;
+    public float Cooltime_Remain;
 
     /// <summary>
     /// 무기의 효과
@@ -44,5 +45,8 @@ public class Weapon : MonoBehaviour {
     /// </summary>
     public CEffect VisualEffect;
 
-
+    public bool DoCheck_IsReadyToFire()
+    {
+        return Cooltime_Remain < 0f;
+    }
 }

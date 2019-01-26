@@ -9,9 +9,9 @@ public class CharacterModel : CObjectBase
     public CObserverSubject<Weapon> p_Event_OnChange_Weapon_Ranged { get; private set; } = new CObserverSubject<Weapon>();
     public CObserverSubject<Armor> p_Event_OnChange_Armor { get; private set; } = new CObserverSubject<Armor>();
 
-    public Weapon _pWeapon_Equiped { get; private set; }
-    public Weapon _pWeapon_Equiped_Ranged { get; private set; }
-    public Armor _pArmor_Equiped { get; private set; }
+    public Weapon p_pWeapon_Equiped { get; private set; }
+    public Weapon p_pWeapon_Equiped_Ranged { get; private set; }
+    public Armor p_pArmor_Equiped { get; private set; }
 
     // -----------------------
 
@@ -27,7 +27,7 @@ public class CharacterModel : CObjectBase
 
     public void DoAttack_Melee(GameObject pObjectTarget)
     {
-        Weapon pWeaponCurrent = _pWeapon_Equiped == null ? _pWeapon_Hands : _pWeapon_Equiped;
+        Weapon pWeaponCurrent = p_pWeapon_Equiped == null ? _pWeapon_Hands : p_pWeapon_Equiped;
         _pTweenPos.DoPlayTween_Forward();
         //pWeaponCurrent.DoFireWeapon();
 
@@ -45,7 +45,7 @@ public class CharacterModel : CObjectBase
 
     public void DoAttack_Range(GameObject pObjectTarget)
     {
-        Weapon pWeaponCurrent = _pWeapon_Equiped_Ranged == null ? _pWeapon_Hands : _pWeapon_Equiped_Ranged;
+        Weapon pWeaponCurrent = p_pWeapon_Equiped_Ranged == null ? _pWeapon_Hands : p_pWeapon_Equiped_Ranged;
         _pTweenPos.DoPlayTween_Forward();
         //pWeaponCurrent.DoFireWeapon();
 
@@ -54,7 +54,7 @@ public class CharacterModel : CObjectBase
 
     public void GetWeapon(Weapon pWeapon)
     {
-        _pWeapon_Equiped = pWeapon;
+        p_pWeapon_Equiped = pWeapon;
 
         pStat?.SetItemStat(pWeapon, null);
         //pStat.DoIncrease_Stat(pWeapon.effects);
@@ -64,7 +64,7 @@ public class CharacterModel : CObjectBase
 
     public void GetArmor(Armor pArmor)
     {
-        _pArmor_Equiped = pArmor;
+        p_pArmor_Equiped = pArmor;
         pStat?.SetItemStat(null, pArmor);
         //pStat.DoIncrease_Stat(pArmor.effects);
 

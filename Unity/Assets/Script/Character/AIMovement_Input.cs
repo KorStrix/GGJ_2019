@@ -33,8 +33,13 @@ public class AIMovement_Input : CObjectBase
     CharacterMovement _pCharacterMovement = null;
     [GetComponent]
     AIPath _pAIPath = null;
+    [GetComponent]
+    CharacterModel _pCharacterModel = null;
+    [GetComponentInChildren]
+    CPhysicsTrigger _pPhysicsTrigger = null;
 
     Transform _pTransformTarget;
+    Stats _pStat_Mine;
     int _iJewelIndex;
 
     // ========================================================================== //
@@ -76,6 +81,39 @@ public class AIMovement_Input : CObjectBase
     // ========================================================================== //
 
     #region Private
+
+    IEnumerator CoAIState_OnScanTarget()
+    {
+        _pPhysicsTrigger.GetComponent<SphereCollider>().radius = _pStat_Mine.fDetectArea;
+        _pPhysicsTrigger.enabled = true;
+        _pPhysicsTrigger.DoClear_InColliderList();
+
+        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0)
+        {
+            yield return null;
+        }
+        _pPhysicsTrigger.enabled = false;
+
+        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Stay();
+        DoSetTarget(listCollider[0].transform);
+    }
+
+
+    IEnumerator CoAIState_OnChase_ForAttack()
+    {
+        _pPhysicsTrigger.GetComponent<SphereCollider>().radius = _pStat_Mine.fDetectArea;
+        _pPhysicsTrigger.enabled = true;
+        _pPhysicsTrigger.DoClear_InColliderList();
+
+        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0 || _pCharacterModel.p_pWeapon_Equiped.DoCheck_IsReadyToFire() == false)
+        {
+            yield return null;
+        }
+        _pPhysicsTrigger.enabled = false;
+
+        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Stay();
+        _pCharacterModel.DoAttack_Melee(listCollider[0].gameObject);
+    }
 
     private void CalculateNextJewel()
     {
