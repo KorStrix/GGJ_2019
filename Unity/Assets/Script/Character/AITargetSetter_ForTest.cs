@@ -37,9 +37,9 @@ public class AITargetSetter_ForTest : CObjectBase
 
     /* protected - Override & Unity API         */
 
-    protected override void OnEnableObject()
+    protected override IEnumerator OnEnableObjectCoroutine()
     {
-        base.OnEnableObject();
+        yield return null;
 
         _pAIMovementInput.DoSetTarget(FindObjectOfType<PlayerInput>().transform);
     }

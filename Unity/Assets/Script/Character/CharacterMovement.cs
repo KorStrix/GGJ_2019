@@ -21,13 +21,12 @@ public class CharacterMovement : CObjectBase
 
     /* public - Field declaration            */
 
+    public CObserverSubject<bool> p_Event_OnMovePlayer { get; private set; } = new CObserverSubject<bool>();
 
     /* protected & private - Field declaration         */
 
     [GetComponent]
     CharacterModel _pCharacterModel = null;
-    [GetComponent]
-    Transform _pTransform = null;
     [GetComponent]
     Rigidbody _pRigidbody = null;
 
@@ -42,6 +41,7 @@ public class CharacterMovement : CObjectBase
         //_pRigidbody.MovePosition(vecPos);
 
         _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.basics.speed.FValue * Time.deltaTime;
+        p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f);
     }
 
     // ========================================================================== //

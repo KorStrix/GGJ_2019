@@ -1,14 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerInput : CObjectBase
 {
-    static public CObserverSubject<bool> p_Event_OnMovePlayer { get; private set; } = new CObserverSubject<bool>();
-
     [GetComponent]
-    CharacterMovement _pCharacterMovement = null;
+    public CharacterMovement p_pCharacterMovement { get; private set; }
+    [GetComponent]
+    NavMeshAgent _pNavmeshAgent = null;
+
+    Transform _pTransform_NavmeshTarget;
+
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        _pTransform_NavmeshTarget = null;
+        HomeKeeperGameManager.instance.p_Event_OnAction.Subscribe += P_Event_OnAction_Subscribe;
+    }
+
+    private void P_Event_OnAction_Subscribe(GameObject pObject)
+    {
+        _pTransform_NavmeshTarget = pObject.transform;
+    }
 
     public override void OnUpdate()
     {
@@ -17,8 +34,21 @@ public class PlayerInput : CObjectBase
         float speedX = Mathf.Clamp(Input.GetAxis("Horizontal"), -1f, 1f);
         float speedZ = Mathf.Clamp(Input.GetAxis("Vertical"), -1f, 1f);
 
-        _pCharacterMovement.DoMove(new Vector3(speedX, 0f, speedZ));
+        Vector3 vecDesireVelocity;
 
-        p_Event_OnMovePlayer.DoNotify(speedX != 0f || speedZ != 0f);
+        if (speedX != 0f && speedZ != 0f)
+            _pTransform_NavmeshTarget = null;
+
+        if (_pTransform_NavmeshTarget)
+        {
+            _pNavmeshAgent.SetDestination(_pTransform_NavmeshTarget.position);
+            vecDesireVelocity = _pNavmeshAgent.desiredVelocity.normalized;
+        }
+        else
+        {
+            vecDesireVelocity = new Vector3(speedX, 0f, speedZ);
+        }
+
+        p_pCharacterMovement.DoMove(vecDesireVelocity);
     }
 }
