@@ -15,33 +15,42 @@ public class CharacterModel : CObjectBase
 
     Weapon _pWeapon_Hands = null;
 
-    private Weapon _pWeaponEquied;
-    private Armor _pArmor_Equiped;
+    public Weapon _pWeapon_Equied { get; private set; }
+    public Weapon _pWeapon_Equied_Ranged { get; private set; }
+    public Armor _pArmor_Equiped { get; private set; }
 
-    public void DoAttack_Melee()
+    public void DoAttack_Melee(GameObject pObjectTarget)
     {
-        Weapon pWeaponCurrent = _pWeaponEquied == null ? _pWeapon_Hands : _pWeaponEquied;
-        CManagerEffect.instance.DoPlayEffect(pWeaponCurrent.VisualEffect.ToString(), transform.position);
+        Weapon pWeaponCurrent = _pWeapon_Equied == null ? _pWeapon_Hands : _pWeapon_Equied;
+        pWeaponCurrent.DoFireWeapon();
 
-        Debug.Log("DoAttack_Melee");
+        Debug.Log(name + " DoAttack_Melee pObjectTarget : " + pObjectTarget.name);
     }
 
-    public void DoAttack_Gun()
+    public void DoAttack_Range(GameObject pObjectTarget)
     {
-        Weapon pWeaponCurrent = _pWeaponEquied == null ? _pWeapon_Hands : _pWeaponEquied;
-        CManagerEffect.instance.DoPlayEffect(pWeaponCurrent.VisualEffect.ToString(), transform.position);
+        Weapon pWeaponCurrent = _pWeapon_Equied_Ranged == null ? _pWeapon_Hands : _pWeapon_Equied_Ranged;
+        pWeaponCurrent.DoFireWeapon();
 
-        Debug.Log("DoAttack_Gun");
+        Debug.Log(name + " DoAttack_Range pObjectTarget : " + pObjectTarget.name);
     }
 
-    public void GetWeapon(Weapon weapon)
+    public void GetWeapon(Weapon pWeapon)
     {
-        _pWeaponEquied = weapon;
+        _pWeapon_Equied = pWeapon;
+        pStat.DoIncrease_Stat(pWeapon.effects);
     }
 
-    public void GetArmor(Armor armor)
+    public void GetArmor(Armor pArmor)
     {
-        _pArmor_Equiped = armor;
-        pStat.DoIncrease_Stat(armor.effects);
+        _pArmor_Equiped = pArmor;
+        pStat.DoIncrease_Stat(pArmor.effects);
+    }
+
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        pStat.DoInit();
     }
 }

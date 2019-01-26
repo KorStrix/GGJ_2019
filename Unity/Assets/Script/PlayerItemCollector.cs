@@ -22,17 +22,23 @@ public class PlayerItemCollector : MonoBehaviour {
     Rigidbody characterRigid;
     Weapon fist;
 
-    private void Awake() {
-      
-    }
-    // Use this for initialization
-    void Start () {
+    // =======================================================================
+
+    public Weapon DoEquipWeapon(string strResourceName)
+    {
         CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
-        fist = CManagerPooling_InResources<string, Weapon>.instance.DoPop("Fist");
-        fist.transform.SetParent(transform);
-        fist.transform.localPosition = Vector3.zero;
+        Weapon pWeapon = CManagerPooling_InResources<string, Weapon>.instance.DoPop(strResourceName);
+        pWeapon.transform.SetParent(transform);
+        pWeapon.transform.localPosition = Vector3.zero;
+
+        return pWeapon;
+    }
+
+    // Use this for initialization
+    void Start ()
+    {
         characterRigid = GetComponentInParent<Rigidbody>();
-        WeaponHeld = fist;
+        WeaponHeld = fist = DoEquipWeapon("Fist");
         //Search for Character
         var ch = GetComponentInParent<CharacterModel>();
         if (ch != null)
@@ -45,11 +51,6 @@ public class PlayerItemCollector : MonoBehaviour {
         EventOnGetWeapon?.Invoke(fist);
     }
 
-
-    // Update is called once per frame
-    void Update () {
-		
-	}
 
     /// <summary>
     /// 아이템을 이곳에서 줍습니다.

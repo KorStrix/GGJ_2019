@@ -12,6 +12,7 @@ public class Stats : ScriptableObject
     public float dexterity;
     public float speed;
     public float luck;
+    public float fDetectArea;
 
     SecondStats _pSecondStat;
 

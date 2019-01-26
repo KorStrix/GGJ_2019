@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 public enum WeaponType { fist, melee, handgun, rifle}
-public class Weapon : MonoBehaviour {
+public class Weapon : CObjectBase {
     /// <summary>
     /// 무기의 이름
     /// </summary>
@@ -29,6 +29,8 @@ public class Weapon : MonoBehaviour {
     /// </summary>
     public float Cooltime;
 
+    public float fAttackDelay;
+
     /// <summary>
     /// 무기의 효과
     /// </summary>
@@ -40,5 +42,25 @@ public class Weapon : MonoBehaviour {
     /// </summary>
     public CEffect VisualEffect;
 
+    public bool DoCheck_IsReadyToFire()
+    {
+        return Cooltime < 0f;
+    }
+
+    public void DoFireWeapon()
+    {
+        if(VisualEffect != null)
+            CManagerEffect.instance.DoPlayEffect(VisualEffect.ToString(), transform.position);
+
+        Cooltime = fAttackDelay;
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        if (Cooltime > 0f)
+            Cooltime -= Time.deltaTime;
+    }
 
 }
