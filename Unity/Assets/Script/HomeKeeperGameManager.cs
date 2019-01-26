@@ -82,6 +82,11 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         }
     }
 
+    public void Event_OnActionFinish()
+    {
+        _pTransform_CurrentTarget.SetActive(false);
+    }
+
     // ========================================================================== //
 
     /* protected - Override & Unity API         */

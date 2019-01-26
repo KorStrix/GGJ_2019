@@ -38,7 +38,7 @@ public class Panel_GameStart : CUGUIPanelBase
 
     protected override IEnumerator OnEnableObjectCoroutine()
     {
-        yield return new WaitForSeconds(p_fWaitSeconds);
+        yield return new WaitForSecondsRealtime(p_fWaitSeconds);
 
         DoHide_UGUIPanel();
     }

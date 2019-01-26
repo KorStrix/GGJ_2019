@@ -10,11 +10,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.AI;
+using Pathfinding;
 
 /// <summary>
 /// 
 /// </summary>
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(AIPath))]
 public class AIMovement_Input : CObjectBase
 {
     /* const & readonly declaration             */
@@ -29,7 +30,7 @@ public class AIMovement_Input : CObjectBase
     [GetComponent]
     CharacterMovement _pCharacterMovement = null;
     [GetComponent]
-    NavMeshAgent _pNavmeshAgent = null;
+    AIPath _pAIPath = null;
 
     Transform _pTransformTarget;
 
@@ -54,8 +55,8 @@ public class AIMovement_Input : CObjectBase
         if (_pTransformTarget == null)
             return;
 
-        _pNavmeshAgent.SetDestination(_pTransformTarget.position);
-        _pCharacterMovement.DoMove(_pNavmeshAgent.desiredVelocity.normalized);
+        _pAIPath.destination = _pTransformTarget.position;
+        _pCharacterMovement.DoMove(_pAIPath.desiredVelocity.normalized);
     }
 
     /* protected - [abstract & virtual]         */

@@ -1,16 +1,16 @@
-﻿using System.Collections;
+﻿using Pathfinding;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(AIPath))]
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerInput : CObjectBase
 {
     [GetComponent]
     public CharacterMovement p_pCharacterMovement { get; private set; }
     [GetComponent]
-    NavMeshAgent _pNavmeshAgent = null;
+    AIPath _pNavmeshAgent = null;
 
     Transform _pTransform_NavmeshTarget;
 
@@ -37,11 +37,17 @@ public class PlayerInput : CObjectBase
         Vector3 vecDesireVelocity;
 
         if (speedX != 0f && speedZ != 0f)
+        {
+            HomeKeeperGameManager.instance.Event_OnActionFinish();
             _pTransform_NavmeshTarget = null;
+        }
 
         if (_pTransform_NavmeshTarget)
         {
-            _pNavmeshAgent.SetDestination(_pTransform_NavmeshTarget.position);
+            _pNavmeshAgent.destination = _pTransform_NavmeshTarget.position;
+
+            //if(_pNavmeshAgent.desiredVelocity.normalized.Equals(Vector3.zero))
+            //    _pNavmeshAgent.
             vecDesireVelocity = _pNavmeshAgent.desiredVelocity.normalized;
         }
         else
