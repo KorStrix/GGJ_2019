@@ -65,11 +65,15 @@ public class Spawner_Character : CObjectBase
             GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Character/" + p_eCharacterType.ToString_GarbageSafe())) as GameObject;
             pObjectPrefab.transform.SetParent(transform);
             pObjectPrefab.transform.DoResetTransform();
-
-            AIMovement_Input pAIMovementInput = pObjectPrefab.GetComponent<AIMovement_Input>();
-            if (pAIMovementInput != null)
-                pAIMovementInput.DoInitJewelList(listJewel);
         }
+
+        for (int i = 0; i < listJewel.Count; i++)
+            listJewel[i].EventOnAwake();
+
+        AIMovement_Input pAIMovementInput = transform.GetChild(0).GetComponent<AIMovement_Input>();
+        if (pAIMovementInput != null)
+            pAIMovementInput.DoInitJewelList(listJewel);
+
     }
 
     // ========================================================================== //

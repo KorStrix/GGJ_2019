@@ -61,14 +61,14 @@ public class Spawner_Jewel : CObjectBase
             }
         }
 
-        if(transform.childCount == 0)
+        if (transform.childCount == 0)
         {
             GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Jewel/" + p_eItemType.ToString_GarbageSafe())) as GameObject;
             pObjectPrefab.transform.SetParent(transform);
             pObjectPrefab.transform.DoResetTransform();
-
-            p_pJewel = pObjectPrefab.GetComponent<Jewel>();
         }
+
+        p_pJewel = transform.GetChild(0).GetComponent<Jewel>();
     }
 
     // ========================================================================== //
