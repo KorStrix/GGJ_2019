@@ -29,8 +29,8 @@ public class Panel_GamePause : CUGUIPanelBase, IUIObject_HasButton<Panel_GamePau
 
 
     /* protected & private - Field declaration         */
-    [GetComponentInChildren]
-    Dictionary<EButton, UnityEngine.UI.Button> _mapButton = new Dictionary<EButton, UnityEngine.UI.Button>();
+    
+    
 
     // ========================================================================== //
 
@@ -38,10 +38,23 @@ public class Panel_GamePause : CUGUIPanelBase, IUIObject_HasButton<Panel_GamePau
      * 외부 객체가 호출(For External class call)*/
 
     public void IUIObject_HasButton_OnClickButton(EButton eButtonName) {
-       
-        
+        switch (eButtonName) {
+        case EButton.Button_Exit:
 
-        p_Event_OnClickButton.DoNotify(eButtonName);
+            break;
+        case EButton.Button_Restart:
+
+            break;
+
+
+        case EButton.Button_Resume:
+            HomeKeeperGameManager.instance.DoGame_Resume();
+            break;
+        }
+    
+
+
+    p_Event_OnClickButton.DoNotify(eButtonName);
     }
     // ========================================================================== //
 
@@ -55,13 +68,6 @@ public class Panel_GamePause : CUGUIPanelBase, IUIObject_HasButton<Panel_GamePau
     // ========================================================================== //
 
     #region Private
-    private void CurrentActivateButton(EButton eButtonName) {
-        _mapButton[eButtonName].targetGraphic.color = _mapButton[eButtonName].colors.pressedColor;
-    }
-
-    private void DisableButton(UnityEngine.UI.Button pButton) {
-        pButton.targetGraphic.color = pButton.colors.disabledColor;
-        pButton.enabled = false;
-    }
+    
     #endregion Private
 }
