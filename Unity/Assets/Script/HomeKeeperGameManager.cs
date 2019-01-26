@@ -35,7 +35,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     [GetComponentInChildren("CurrentTarget")]
     Transform _pTransform_CurrentTarget = null;
-
+    
     CManagerTimeScale _pManagerTimeScale;
     bool _bIsWaitAction;
 
@@ -46,9 +46,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void DoGame_Start()
     {
-        _bIsWaitAction = false;
-
-        p_Event_OnGameState.DoNotify(EGameState.Start);
+        StartCoroutine(CoGameStart());
     }
 
     public void DoGame_Victory()
@@ -147,6 +145,16 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     // ========================================================================== //
 
     #region Private
+
+    IEnumerator CoGameStart()
+    {
+        _bIsWaitAction = false;
+
+        yield return null;
+
+        AstarPath.active.Scan();
+        p_Event_OnGameState.DoNotify(EGameState.Start);
+    }
 
     private void P_Event_OnClickButton_Subscribe(Panel_Idle.EButton eButtonName)
     {
