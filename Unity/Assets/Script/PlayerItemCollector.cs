@@ -22,7 +22,7 @@ public class PlayerItemCollector : MonoBehaviour {
     Rigidbody characterRigid;
     Weapon fist;
 
-    public Weapon DoEquipWeapon(string strResourceName)
+    public Weapon DoCreateAndEquipWeapon(string strResourceName)
     {
         CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
         Weapon pWeapon = CManagerPooling_InResources<string, Weapon>.instance.DoPop(strResourceName);
@@ -39,8 +39,9 @@ public class PlayerItemCollector : MonoBehaviour {
     void Start()
     {
         characterRigid = GetComponentInParent<Rigidbody>();
+
+        fist = DoCreateAndEquipWeapon("Fist");
         WeaponHeld = fist;
-        WeaponHeld = fist = DoEquipWeapon("Fist");
     }
 
     /// <summary>

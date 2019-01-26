@@ -79,7 +79,7 @@ public class Spawner_Character : CObjectBase
         if (pWeapon_Equip != null)
         {
             PlayerItemCollector pCollector = transform.GetChild(0).GetComponentInChildren<PlayerItemCollector>();
-            pCollector.DoEquipWeapon(pWeapon_Equip.name);
+            pCollector.DoCreateAndEquipWeapon(pWeapon_Equip.name);
         }
     }
 
