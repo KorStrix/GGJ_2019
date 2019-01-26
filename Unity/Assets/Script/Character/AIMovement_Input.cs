@@ -89,6 +89,8 @@ public class AIMovement_Input : CObjectBase
                 bIsNotFind_NextJewel = false;
                 break;
             }
+
+            _iJewelIndex++;
         }
 
         if (bIsNotFind_NextJewel)
