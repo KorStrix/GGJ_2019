@@ -1,7 +1,7 @@
 ﻿#region Header
 /*	============================================
  *	작성자 : Strix
- *	작성일 : 2019-01-26 오전 7:39:54
+ *	작성일 : 2019-01-26 오후 12:51:26
  *	개요 : 
    ============================================ */
 #endregion Header
@@ -14,7 +14,7 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// 
 /// </summary>
-public class MouseClick : CObjectBase, IPointerClickHandler
+public class MouseClick_Player : CObjectBase, IPointerClickHandler
 {
     /* const & readonly declaration             */
 
@@ -31,15 +31,13 @@ public class MouseClick : CObjectBase, IPointerClickHandler
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        HomeKeeperGameManager.instance.Event_OnAction(gameObject);
-    }
-
     // ========================================================================== //
 
     /* protected - Override & Unity API         */
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+    }
 
     /* protected - [abstract & virtual]         */
 
