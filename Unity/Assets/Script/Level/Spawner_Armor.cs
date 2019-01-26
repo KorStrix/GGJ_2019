@@ -21,7 +21,7 @@ public class Spawner_Armor : CObjectBase
 
     /* enum & struct declaration                */
 
-    public enum EWeaponType
+    public enum EArmorType
     {
        Baseball_Cap,
        Body_Armor,
@@ -31,8 +31,8 @@ public class Spawner_Armor : CObjectBase
 
     /* public - Field declaration            */
 
-    public EWeaponType p_eItemType;
-
+    public EArmorType p_eItemType;
+    public bool p_randSpawn;
     /* protected & private - Field declaration         */
 
 
@@ -75,7 +75,7 @@ public class Spawner_Armor : CObjectBase
     protected override void OnAwake()
     {
         base.OnAwake();
-
+        if (p_randSpawn) p_eItemType = (EArmorType)Random.Range(0, 3.999f);
         DoSpawn_Consumable(false);
     }
 

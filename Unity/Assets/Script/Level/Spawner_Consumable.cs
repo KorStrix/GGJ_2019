@@ -32,7 +32,7 @@ public class Spawner_Consumable : CObjectBase
     /* public - Field declaration            */
 
     public EConsumableType p_eItemType;
-
+    public bool p_randSpawn;
     /* protected & private - Field declaration         */
 
 
@@ -75,7 +75,7 @@ public class Spawner_Consumable : CObjectBase
     protected override void OnAwake()
     {
         base.OnAwake();
-
+        if (p_randSpawn) p_eItemType = (EConsumableType)Random.Range(0, 3.999f);
         DoSpawn_Consumable(false);
     }
 

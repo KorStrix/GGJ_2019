@@ -34,6 +34,7 @@ public class Spawner_Weapon : CObjectBase
     /* public - Field declaration            */
 
     public EWeaponType p_eItemType;
+    public bool p_randSpawn;
 
     /* protected & private - Field declaration         */
 
@@ -44,7 +45,7 @@ public class Spawner_Weapon : CObjectBase
      * 외부 객체가 호출(For External class call)*/
 
     [Button("DoSpawn_Item")]
-    public void DoSpawn_Consumable(bool bUpdateForce)
+    public void DoSpawn_Weapon(bool bUpdateForce)
     {
         while (transform.childCount > 1)
             DestroyImmediate(transform.GetChild(0).gameObject);
@@ -77,8 +78,8 @@ public class Spawner_Weapon : CObjectBase
     protected override void OnAwake()
     {
         base.OnAwake();
-
-        DoSpawn_Consumable(false);
+        if(p_randSpawn)p_eItemType = (EWeaponType)Random.Range(0, 5.999f);
+        DoSpawn_Weapon(false);
     }
 
 #if UNITY_EDITOR
@@ -87,7 +88,7 @@ public class Spawner_Weapon : CObjectBase
         if (Application.isPlaying)
             return;
 
-        DoSpawn_Consumable(false);
+        DoSpawn_Weapon(false);
     }
 #endif
 
