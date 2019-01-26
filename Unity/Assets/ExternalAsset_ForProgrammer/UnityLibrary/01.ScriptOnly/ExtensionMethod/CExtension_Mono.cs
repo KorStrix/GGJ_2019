@@ -28,7 +28,7 @@ public static class CExtension_Mono
     {
         if (pObj == null)
         {
-            Debug.Log(" SetActive - Component == null");
+            //Debug.Log(" SetActive - Component == null");
             return;
         }
 

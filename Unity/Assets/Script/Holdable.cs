@@ -5,7 +5,7 @@ using UnityEngine;
 public class Holdable : MonoBehaviour {
     
     [SerializeField] float nonInteractTime = 1f;
-    
+    const float SPEEDSCALE = 3f;
 	// Use this for initialization
 	void Start () {
 		
@@ -23,31 +23,36 @@ public class Holdable : MonoBehaviour {
     /// </summary>
     /// <param name="character"></param>
     public void Attach(Transform character) {
+        Debug.Log("Attach!");
         transform.parent = character;
         transform.localPosition = Vector3.zero;
-        //GetComponent<SpriteRenderer>().SetActive(false);
-        GetComponent<SphereCollider>().SetActive(false);
+        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        GetComponentInChildren<Renderer>().enabled = false;
+        GetComponent<Collider>().enabled = false;
         isHeld = true;
     }
 
     /// <summary>
     /// 이 오브젝트를 바닥에 내려놓습니다. 무기 아이템 스프라이트가 보입니다.
     /// </summary>
-    public void Detach(Vector3 direction) {
+    public void Detach(Vector3 speed) {
+        Debug.Log("Detach!");
         transform.SetParent(null, true);
-        
-        GetComponent<Rigidbody>().velocity = direction.normalized*1;
+        GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        GetComponent<Rigidbody>().velocity = speed*SPEEDSCALE;
         isHeld = false;
-        //GetComponent<SpriteRenderer>().SetActive(true);
+        GetComponentInChildren<Renderer>().enabled = true;
 
-
+        
         StartCoroutine(WaitAfterDetached());
+        
     }
 
     public IEnumerator WaitAfterDetached() {
         yield return new WaitForSeconds(nonInteractTime);
 
-        gameObject.SetActive(true);
+        GetComponent<Collider>().enabled = true;
         
     }
+    
 }

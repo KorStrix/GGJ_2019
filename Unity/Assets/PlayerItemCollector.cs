@@ -19,10 +19,12 @@ public class PlayerItemCollector : MonoBehaviour {
     public Armor ArmorHeld;
     public Jewel JewelHeld;
 
+    Rigidbody characterRigid;
     Weapon fist;
     // Use this for initialization
     void Start () {
         fist = GetComponentInChildren<Weapon>();
+        characterRigid = GetComponentInParent<Rigidbody>();
         WeaponHeld = fist;
         //Search for Character
         var ch = GetComponentInParent<CharacterModel>();
@@ -53,7 +55,7 @@ public class PlayerItemCollector : MonoBehaviour {
             var h = other.GetComponent<Holdable>();
             h.Attach(transform);
             if (WeaponHeld != fist)
-                WeaponHeld.GetComponent<Holdable>().Detach(transform.forward);
+                WeaponHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
             WeaponHeld = h.GetComponent<Weapon>();
             EventOnGetWeapon(WeaponHeld);
             break;
@@ -61,7 +63,7 @@ public class PlayerItemCollector : MonoBehaviour {
             var h2 = other.GetComponent<Holdable>();
             h2.Attach(transform);
             if (ArmorHeld != null)
-                ArmorHeld.GetComponent<Holdable>().Detach(transform.forward);
+                ArmorHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
             ArmorHeld = h2.GetComponent<Armor>();
             EventOnGetArmor(ArmorHeld);
             break;
@@ -75,7 +77,7 @@ public class PlayerItemCollector : MonoBehaviour {
             var h3 = other.GetComponent<Holdable>();
             h3.Attach(transform);
             if (JewelHeld != null)
-                JewelHeld.GetComponent<Holdable>().Detach(transform.forward);
+                JewelHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
             JewelHeld = h3.GetComponent<Jewel>();
             EventOnGetJewel(JewelHeld);
             break;
@@ -89,17 +91,17 @@ public class PlayerItemCollector : MonoBehaviour {
     public void DropWeapon() {
         if (WeaponHeld == fist) return;
         else {
-            WeaponHeld.GetComponent<Holdable>().Detach(transform.forward);
+            WeaponHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
             WeaponHeld = fist;
         }
     }
     public void DropArmor() {
-        ArmorHeld.GetComponent<Holdable>().Detach(transform.forward);
+        ArmorHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
         ArmorHeld = null;
 
     }
     public void DropJewel() {
-        JewelHeld.GetComponent<Holdable>().Detach(transform.forward);
+        JewelHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
         JewelHeld = null;
     }
 }
