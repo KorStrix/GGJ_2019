@@ -38,7 +38,7 @@ public class CharacterModel : CObjectBase
     public void DoAttack_Melee(GameObject pObjectTarget)
     {
         Weapon pWeaponCurrent = GetCurrentWeapon();
-        pWeaponCurrent.DoFire_Weapon();
+        pWeaponCurrent.DoFire_Weapon((pObjectTarget.transform.position - transform.position).normalized);
         p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnAttack);
 
         var target = pObjectTarget.GetComponent<CharacterModel>();

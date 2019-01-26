@@ -63,11 +63,17 @@ public class Weapon : CObjectBase {
         return Cooltime_Remain <= 0f && fDistance <= Range;
     }
 
-    public void DoFire_Weapon()
+    public void DoFire_Weapon(Vector3 vecTargetDirection)
     {
         Cooltime_Remain = Cooltime;
 
         CManagerSound.instance.DoPlaySoundEffect_OrNull(ShootClip);
+
+        if(VisualEffect != null)
+        {
+            CEffect pEffect = CManagerEffect.instance.DoPlayEffect(VisualEffect.name, transform.position);
+            pEffect.transform.forward = vecTargetDirection;
+        }
     }
 
     public override void OnUpdate()
