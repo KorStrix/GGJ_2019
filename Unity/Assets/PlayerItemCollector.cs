@@ -25,7 +25,7 @@ public class PlayerItemCollector : MonoBehaviour {
         fist = GetComponentInChildren<Weapon>();
 
         //Search for Character
-        var ch = GetComponent<CharacterModel>();
+        var ch = GetComponentInParent<CharacterModel>();
         if (ch != null)
         {
             EventOnGetWeapon += ch.GetWeapon;
@@ -49,7 +49,7 @@ public class PlayerItemCollector : MonoBehaviour {
        
 
         switch (other.tag) {
-        case "weapon":
+        case "Weapon":
             var h = other.GetComponent<Holdable>();
             h.Attach(transform);
             if (WeaponHeld != fist)
@@ -57,7 +57,7 @@ public class PlayerItemCollector : MonoBehaviour {
             WeaponHeld = h.GetComponent<Weapon>();
             EventOnGetWeapon(WeaponHeld);
             break;
-        case "armor":
+        case "Armor":
             var h2 = other.GetComponent<Holdable>();
             h2.Attach(transform);
             if (ArmorHeld != null)
@@ -65,12 +65,13 @@ public class PlayerItemCollector : MonoBehaviour {
             ArmorHeld = h2.GetComponent<Armor>();
             EventOnGetArmor(ArmorHeld);
             break;
-        case "consumable":
+        case "Consumable":
+            Debug.Log("consume!");
             var c = other.GetComponent<Consumable>();
-            EventOnGetConsumable(c);
+            EventOnGetConsumable?.Invoke(c);
             Destroy(other.gameObject);
             break;
-        case "jewel":
+        case "Jewel":
             var h3 = other.GetComponent<Holdable>();
             h3.Attach(transform);
             if (JewelHeld != null)
