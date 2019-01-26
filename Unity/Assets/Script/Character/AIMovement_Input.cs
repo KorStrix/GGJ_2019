@@ -64,6 +64,22 @@ public class AIMovement_Input : CObjectBase
 
     /* protected - Override & Unity API         */
 
+    protected override IEnumerator OnEnableObjectCoroutine()
+    {
+        yield return null;
+
+        _pStat_Mine = GetComponent<CharacterModel>().pStat;
+
+        while (true)
+        {
+            yield return StartCoroutine(CoAIState_OnScanTarget());
+
+            yield return null;
+
+            yield return StartCoroutine(CoAIState_OnChase_ForAttack());
+        }
+    }
+
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -71,8 +87,16 @@ public class AIMovement_Input : CObjectBase
         if (_pTransformTarget == null)
             return;
 
-        _pAIPath.destination = _pTransformTarget.position;
-        _pCharacterMovement.DoMove(_pAIPath.desiredVelocity.normalized);
+        float fDistance = Vector3.Distance(transform.position, _pTransformTarget.position);
+        if(fDistance > _pCharacterModel.p_pWeapon_Equiped.Range)
+        {
+            _pAIPath.destination = _pTransformTarget.position;
+            _pCharacterMovement.DoMove(_pAIPath.desiredVelocity.normalized);
+        }
+        else
+        {
+            _pCharacterMovement.DoLookAt(_pAIPath.desiredVelocity.normalized);
+        }
     }
 
     /* protected - [abstract & virtual]         */
@@ -85,34 +109,38 @@ public class AIMovement_Input : CObjectBase
     IEnumerator CoAIState_OnScanTarget()
     {
         _pPhysicsTrigger.GetComponent<SphereCollider>().radius = _pStat_Mine.fDetectArea;
-        _pPhysicsTrigger.enabled = true;
         _pPhysicsTrigger.DoClear_InColliderList();
 
         while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0)
         {
             yield return null;
         }
-        _pPhysicsTrigger.enabled = false;
 
-        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Stay();
+        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
         DoSetTarget(listCollider[0].transform);
     }
 
 
     IEnumerator CoAIState_OnChase_ForAttack()
     {
-        _pPhysicsTrigger.GetComponent<SphereCollider>().radius = _pStat_Mine.fDetectArea;
-        _pPhysicsTrigger.enabled = true;
-        _pPhysicsTrigger.DoClear_InColliderList();
-
-        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0 || _pCharacterModel.p_pWeapon_Equiped.DoCheck_IsReadyToFire() == false)
+        while(true)
         {
+            while (_pPhysicsTrigger.GetColliderList_3D_Enter().Count == 0)
+            {
+                yield return null;
+            }
+
+            Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
+            float fDistance = Vector3.Distance(transform.position, pTransformTarget.position);
+            if(_pCharacterModel.p_pWeapon_Equiped.DoCheck_IsReadyToFire(fDistance))
+            {
+                List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
+                _pCharacterModel.DoAttack_Melee(listCollider[0].gameObject);
+                break;
+            }
+
             yield return null;
         }
-        _pPhysicsTrigger.enabled = false;
-
-        List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Stay();
-        _pCharacterModel.DoAttack_Melee(listCollider[0].gameObject);
     }
 
     private void CalculateNextJewel()

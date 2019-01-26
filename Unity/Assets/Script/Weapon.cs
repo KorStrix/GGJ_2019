@@ -44,19 +44,41 @@ public class Weapon : CObjectBase {
 
     public Sprite p_pSprite_OnUI { get { return _pSprite_OnDropImage.sprite; } }
 
-    [GetComponentInChildren("ItemSprite")]
-    SpriteRenderer _pSprite_OnDropImage = null;
-    [GetComponentInChildren("HeldSprite")]
-    SpriteRenderer _pSprite_OnHeldSprite = null;
+    public SpriteRenderer _pSprite_OnDropImage = null;
+    public SpriteRenderer _pSprite_OnHeldSprite = null;
 
-    public bool DoCheck_IsReadyToFire()
+    public bool DoCheck_IsReadyToFire(float fDistance)
     {
-        return Cooltime_Remain < 0f;
+        return Cooltime_Remain <= 0f && fDistance <= Range;
+    }
+
+    public void DoFireWeapon()
+    {
+        Cooltime_Remain = Cooltime;
     }
 
     public void DoEquipWeapon(bool bIsEquip)
     {
-        _pSprite_OnDropImage.SetActive(!bIsEquip);
-        _pSprite_OnHeldSprite.SetActive(bIsEquip);
+        if(_pSprite_OnDropImage != null)
+            _pSprite_OnDropImage.SetActive(!bIsEquip);
+
+        if(_pSprite_OnHeldSprite != null)
+            _pSprite_OnHeldSprite.SetActive(bIsEquip);
+    }
+
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
+        if(_pSprite_OnHeldSprite != null)
+            _pSprite_OnHeldSprite.SetActive(false);
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        if (Cooltime_Remain > 0f)
+            Cooltime_Remain -= Time.deltaTime;
     }
 }

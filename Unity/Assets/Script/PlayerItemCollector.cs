@@ -29,6 +29,10 @@ public class PlayerItemCollector : MonoBehaviour {
         pWeapon.transform.SetParent(transform);
         pWeapon.transform.localPosition = Vector3.zero;
 
+        CharacterModel pCharacterModel = GetComponentInParent<CharacterModel>();
+        EventOnGetWeapon += pCharacterModel.GetWeapon;
+        EventOnGetArmor += pCharacterModel.GetArmor;
+
         return pWeapon;
     }
 

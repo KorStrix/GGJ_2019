@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CTweenPosition))]
+public enum ECharacterAnimationName
+{
+    Character_OnAttack,
+    Character_OnHit,
+}
+
 public class CharacterModel : CObjectBase
 {
     public CObserverSubject<Weapon> p_Event_OnChange_Weapon { get; private set; } = new CObserverSubject<Weapon>();
@@ -21,32 +26,32 @@ public class CharacterModel : CObjectBase
     Armor _pArmor_Torso = null;
 
     [GetComponentInChildren]
-    CTweenPosition _pTweenPos = null;
+    CAnimatorController _pAnimator = null;
 
     // -----------------------
 
     public void DoAttack_Melee(GameObject pObjectTarget)
     {
         Weapon pWeaponCurrent = p_pWeapon_Equiped == null ? _pWeapon_Hands : p_pWeapon_Equiped;
-        _pTweenPos.DoPlayTween_Forward();
+        pWeaponCurrent.DoFireWeapon();
+        _pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnAttack);
         //pWeaponCurrent.DoFireWeapon();
 
         var target = pObjectTarget.GetComponent<CharacterModel>();
         float damage = pStat.GetMeleeWeaponDamage(pWeaponCurrent.Damage);
         target.pStat.HP = Mathf.Clamp(CalcDamage(damage, pObjectTarget), 0f, pStat.finalHP);
 
+        target._pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
         if (target.pStat.HP <= 0f)
         {
             //Dead Event
         }
-
-        Debug.Log(name + " DoAttack_Melee pObjectTarget : " + pObjectTarget.name);
     }
 
     public void DoAttack_Range(GameObject pObjectTarget)
     {
         Weapon pWeaponCurrent = p_pWeapon_Equiped_Ranged == null ? _pWeapon_Hands : p_pWeapon_Equiped_Ranged;
-        _pTweenPos.DoPlayTween_Forward();
+        _pAnimator.DoPlayAnimation("Character_OnAttack");
         //pWeaponCurrent.DoFireWeapon();
 
         Debug.Log(name + " DoAttack_Range pObjectTarget : " + pObjectTarget.name);
@@ -57,7 +62,7 @@ public class CharacterModel : CObjectBase
         p_pWeapon_Equiped = pWeapon;
 
         pStat?.SetItemStat(pWeapon, null);
-        pWeapon?.DoEquipWeapon(true);
+        pWeapon.DoEquipWeapon(true);
         //pStat.DoIncrease_Stat(pWeapon.effects);
 
         p_Event_OnChange_Weapon.DoNotify(pWeapon);
@@ -84,11 +89,11 @@ public class CharacterModel : CObjectBase
         float damage = hp;
         Vector3 pos = this.transform.position;
         float posDistance = Vector3.Distance(pos, target.transform.position);
-        pos = Camera.main.WorldToScreenPoint(pos);
+        // pos = Camera.main.WorldToScreenPoint(pos);
 
         if (UnityEngine.Random.Range(0f, 1f) > pStat.GetFinalHitRatio(posDistance))
         {
-            FloatingTextController.CreateFloatingText("! 감 나 빗", pos);
+            //FloatingTextController.CreateFloatingText("! 감 나 빗", pos);
             return 0f;
         }
 

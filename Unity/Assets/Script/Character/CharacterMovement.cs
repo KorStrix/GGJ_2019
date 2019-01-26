@@ -47,6 +47,12 @@ public class CharacterMovement : CObjectBase
         p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f, vecDesireDirection);
     }
 
+    public void DoLookAt(Vector3 vecDesireDirection)
+    {
+        p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f, vecDesireDirection);
+    }
+
+
     // ========================================================================== //
 
     /* protected - Override & Unity API         */

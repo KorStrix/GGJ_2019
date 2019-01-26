@@ -8,7 +8,6 @@ public class Holdable : MonoBehaviour {
     const float SPEEDSCALE = 3f;
 
     [SerializeField] Renderer Itemform;
-    [SerializeField] Renderer Heldform;
     // Use this for initialization
     void Start () {
 		
@@ -26,12 +25,11 @@ public class Holdable : MonoBehaviour {
     /// </summary>
     /// <param name="character"></param>
     public void Attach(Transform character) {
-        Debug.Log("Attach!");
+        Debug.Log("Attach Weapon");
         transform.parent = character;
         transform.localPosition = Vector3.zero;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         Itemform.enabled = false;
-        Heldform.enabled = true;
         foreach(var c in GetComponents<Collider>())c.enabled = false;
         isHeld = true;
     }
@@ -46,7 +44,6 @@ public class Holdable : MonoBehaviour {
         GetComponent<Rigidbody>().velocity = speed*SPEEDSCALE;
         isHeld = false;
         Itemform.enabled = true;
-        Heldform.enabled = false;
 
         
         StartCoroutine(WaitAfterDetached());
