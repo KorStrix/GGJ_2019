@@ -34,7 +34,7 @@ public class Stat
         set { _value = value; }
     }
 
-    private float FValue
+    public float FValue
     {
         get { return FloatStatClipper(); }
         set { _fvalue = value; }
