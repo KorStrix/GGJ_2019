@@ -6,8 +6,11 @@ public class Holdable : MonoBehaviour {
     
     [SerializeField] float nonInteractTime = 1f;
     const float SPEEDSCALE = 3f;
-	// Use this for initialization
-	void Start () {
+
+    [SerializeField] Renderer Itemform;
+    [SerializeField] Renderer Heldform;
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -27,7 +30,8 @@ public class Holdable : MonoBehaviour {
         transform.parent = character;
         transform.localPosition = Vector3.zero;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-        GetComponentInChildren<Renderer>().enabled = false;
+        Itemform.enabled = false;
+        Heldform.enabled = true;
         foreach(var c in GetComponents<Collider>())c.enabled = false;
         isHeld = true;
     }
@@ -41,7 +45,8 @@ public class Holdable : MonoBehaviour {
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
         GetComponent<Rigidbody>().velocity = speed*SPEEDSCALE;
         isHeld = false;
-        GetComponentInChildren<Renderer>().enabled = true;
+        Itemform.enabled = true;
+        Heldform.enabled = false;
 
         
         StartCoroutine(WaitAfterDetached());

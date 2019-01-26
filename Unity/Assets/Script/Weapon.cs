@@ -23,7 +23,11 @@ public class Weapon : CObjectBase {
     /// 무기의 사거리
     /// </summary>
     public float Range;
-
+    
+    /// <summary>
+    /// UI용 스프라이트
+    /// </summary>
+    public Sprite UISprite;
     /// <summary>
     /// 무기의 쿨타임
     /// </summary>
