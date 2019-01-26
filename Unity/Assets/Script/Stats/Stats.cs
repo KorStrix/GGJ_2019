@@ -27,4 +27,9 @@ public class Stats : ScriptableObject
 
         p_Event_OnChangeStatus.DoNotify(this);
     }
+
+    public float GetRemainHP_0_1()
+    {
+        return (float)iHP / iHP_MAX;
+    }
 }

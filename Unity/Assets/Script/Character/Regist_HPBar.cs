@@ -37,11 +37,17 @@ public class Regist_HPBar : CObjectBase
 
     /* protected - Override & Unity API         */
 
-    protected override void OnEnableObject()
+    protected override IEnumerator OnEnableObjectCoroutine()
     {
-        base.OnEnableObject();
+        while (UIManager.instance == null)
+            yield return null;
 
         _pHealthBar = UIManager.instance.GetHealthBar();
+        _pHealthBar.transform.SetParent(transform);
+        _pHealthBar.transform.DoResetTransform();
+
+        CharacterModel pCharacterModel = GetComponentInParent<CharacterModel>();
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
     }
 
     protected override void OnDisableObject()
@@ -57,6 +63,11 @@ public class Regist_HPBar : CObjectBase
     // ========================================================================== //
 
     #region Private
+
+    private void P_Event_OnChangeStatus_Subscribe(Stats obj)
+    {
+        _pHealthBar.DoEdit_HealthBar(obj.GetRemainHP_0_1());
+    }
 
     #endregion Private
 }

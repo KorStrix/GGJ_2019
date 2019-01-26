@@ -30,12 +30,12 @@ public class UIManager : CManagerUGUIBase<UIManager, UIManager.EUIPanel>
 
     /* public - Field declaration            */
 
+    public GameObject p_pObjectHealthBar_Origin;
 
     /* protected & private - Field declaration         */
 
     CManagerPooling<HealthBar> _pHealthBarPool = new CManagerPooling<HealthBar>();
 
-    GameObject _pObjectHealthBar_Origin;
 
     // ========================================================================== //
 
@@ -44,7 +44,7 @@ public class UIManager : CManagerUGUIBase<UIManager, UIManager.EUIPanel>
 
     public HealthBar GetHealthBar()
     {
-        return _pHealthBarPool.DoPop(_pObjectHealthBar_Origin);
+        return _pHealthBarPool.DoPop(p_pObjectHealthBar_Origin);
     }
 
     public void Return_HealthBar(HealthBar pHealthbAr)

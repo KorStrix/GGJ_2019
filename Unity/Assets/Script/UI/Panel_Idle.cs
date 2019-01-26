@@ -114,7 +114,7 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
     private void P_Event_OnChangeStatus_Subscribe(Stats sStats)
     {
-        _mapImage[EImage.Image_HP_Fill].fillAmount = (float)sStats.iHP / sStats.iHP_MAX;
+        _mapImage[EImage.Image_HP_Fill].fillAmount = sStats.GetRemainHP_0_1();
 
         //DoEditText(EText.Text_Stat_S, sStats.finalStr.ToString());
         //DoEditText(EText.Text_Stat_D, sStats.finalDex.ToString());
