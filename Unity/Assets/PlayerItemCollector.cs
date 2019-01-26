@@ -7,17 +7,17 @@ public class PlayerItemCollector : MonoBehaviour {
 
     public delegate void OnGetWeapon(Weapon newWeapon);
     public delegate void OnGetArmor(Armor newArmor);
-    public delegate void OnGetJewel(Jewel newJewel);
+    //public delegate void OnGetJewel();
     public delegate void OnGetConsumable(Consumable consumable);
 
     public event OnGetWeapon EventOnGetWeapon;
     public event OnGetArmor EventOnGetArmor;
-    public event OnGetJewel EventOnGetJewel;
+    //public event OnGetJewel EventOnGetJewel;
     public event OnGetConsumable EventOnGetConsumable;
 
     public Weapon WeaponHeld;
     public Armor ArmorHeld;
-    public Jewel JewelHeld;
+    //public Jewel JewelHeld;
 
     Rigidbody characterRigid;
     Weapon fist;
@@ -39,9 +39,10 @@ public class PlayerItemCollector : MonoBehaviour {
         {
             EventOnGetWeapon += ch.GetWeapon;
             EventOnGetArmor += ch.GetArmor;
-            EventOnGetJewel += ch.GetJewel;
+            //EventOnGetJewel += ch.GetJewel;
         }
-        EventOnGetWeapon(fist);
+
+        EventOnGetWeapon?.Invoke(fist);
     }
 
 
@@ -82,12 +83,9 @@ public class PlayerItemCollector : MonoBehaviour {
             Destroy(other.gameObject);
             break;
         case "Jewel":
-            var h3 = other.GetComponent<Holdable>();
-            h3.Attach(transform);
-            if (JewelHeld != null)
-                JewelHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
-            JewelHeld = h3.GetComponent<Jewel>();
-            EventOnGetJewel(JewelHeld);
+
+            HomeKeeperGameManager.instance.DoLose_Jewel();
+            Destroy(other.gameObject);
             break;
         }
         
@@ -109,9 +107,11 @@ public class PlayerItemCollector : MonoBehaviour {
         ArmorHeld = null;
         EventOnGetArmor(null);
     }
+    /*
     public void DropJewel() {
         JewelHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
         JewelHeld = null;
         EventOnGetJewel(null);
     }
+    */
 }
