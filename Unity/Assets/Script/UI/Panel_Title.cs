@@ -9,6 +9,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 
@@ -47,6 +48,7 @@ public class Panel_Title : CUGUIPanelBase, IUIObject_HasButton<Panel_Title.EUIBu
         switch (eButtonName)
         {
             case EUIButton.Button_GameStart:
+                SceneManager.LoadScene(1);
                 break;
 
             case EUIButton.Button_Credit:
