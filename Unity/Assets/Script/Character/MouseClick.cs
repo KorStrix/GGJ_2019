@@ -1,7 +1,7 @@
 ﻿#region Header
 /*	============================================
  *	작성자 : Strix
- *	작성일 : 2019-01-26 오전 4:11:10
+ *	작성일 : 2019-01-26 오전 7:39:54
  *	개요 : 
    ============================================ */
 #endregion Header
@@ -9,13 +9,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 
 /// </summary>
-[RequireComponent(typeof(NavMeshAgent))]
-public class AIMovement_Input : CObjectBase
+public class MouseClick : CObjectBase, IPointerClickHandler
 {
     /* const & readonly declaration             */
 
@@ -26,37 +25,21 @@ public class AIMovement_Input : CObjectBase
 
     /* protected & private - Field declaration         */
 
-    [GetComponent]
-    CharacterMovement _pCharacterMovement = null;
-    [GetComponent]
-    NavMeshAgent _pNavmeshAgent = null;
-
-    Transform _pTransformTarget;
 
     // ========================================================================== //
 
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    public void DoSetTarget(Transform pTransformTarget)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        _pTransformTarget = pTransformTarget;
+        HomeKeeperGameManager.instance.Event_OnAction(gameObject);
     }
 
     // ========================================================================== //
 
     /* protected - Override & Unity API         */
 
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-
-        if (_pTransformTarget == null)
-            return;
-
-        _pNavmeshAgent.SetDestination(_pTransformTarget.position);
-        _pCharacterMovement.DoMove(_pNavmeshAgent.desiredVelocity.normalized);
-    }
 
     /* protected - [abstract & virtual]         */
 

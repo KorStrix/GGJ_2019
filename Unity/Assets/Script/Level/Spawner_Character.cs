@@ -40,14 +40,30 @@ public class Spawner_Character : CObjectBase
      * 외부 객체가 호출(For External class call)*/
 
     [Button("DoSpawn_Character")]
-    public void DoSpawn_Character()
+    public void DoSpawn_Character(bool bUpdateForce)
     {
-        for (int i = 0; i < transform.childCount; i++)
+        while (transform.childCount > 1)
             DestroyImmediate(transform.GetChild(0).gameObject);
 
-        GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Character/" + p_eCharacterType.ToString())) as GameObject;
-        pObjectPrefab.transform.SetParent(transform);
-        pObjectPrefab.transform.DoResetTransform();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            GameObject pChildObject = transform.GetChild(0).gameObject;
+            if (bUpdateForce)
+            {
+                DestroyImmediate(pChildObject);
+            }
+            else if(pChildObject.name.Contains(p_eCharacterType.ToString_GarbageSafe()))
+            {
+                DestroyImmediate(pChildObject);
+            }
+        }
+
+        if(transform.childCount == 0)
+        {
+            GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Character/" + p_eCharacterType.ToString_GarbageSafe())) as GameObject;
+            pObjectPrefab.transform.SetParent(transform);
+            pObjectPrefab.transform.DoResetTransform();
+        }
     }
 
     // ========================================================================== //
@@ -58,7 +74,7 @@ public class Spawner_Character : CObjectBase
     {
         base.OnAwake();
 
-        DoSpawn_Character();
+        DoSpawn_Character(true);
     }
 
 #if UNITY_EDITOR
@@ -67,7 +83,7 @@ public class Spawner_Character : CObjectBase
         if (Application.isPlaying)
             return;
 
-        DoSpawn_Character();
+        DoSpawn_Character(false);
     }
 #endif
 

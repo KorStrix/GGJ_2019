@@ -40,11 +40,14 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
     /* public - Field declaration            */
 
+    static public CObserverSubject<EButton> p_Event_OnClickButton { get; private set; } = new CObserverSubject<EButton>();
 
     /* protected & private - Field declaration         */
 
     [GetComponentInChildren]
     Dictionary<EText, UnityEngine.UI.Text> _mapText = new Dictionary<EText, UnityEngine.UI.Text>();
+    [GetComponentInChildren]
+    Dictionary<EButton, UnityEngine.UI.Button> _mapButton = new Dictionary<EButton, UnityEngine.UI.Button>();
 
     // ========================================================================== //
 
@@ -58,14 +61,11 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
     public void IUIObject_HasButton_OnClickButton(EButton eButtonName)
     {
-        switch (eButtonName)
-        {
-            case EButton.Button_Attack:
+        foreach (var pButton in _mapButton.Values)
+            DisableButton(pButton);
+        CurrentActivateButton(eButtonName);
 
-                Debug.Log("Attack");
-
-                break;
-        }
+        p_Event_OnClickButton.DoNotify(eButtonName);
     }
 
     // ========================================================================== //
@@ -77,11 +77,8 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         base.OnAwake();
 
         CManagerTimeScale.instance.p_Event_OnChangeTimeScale.Subscribe += P_Event_OnChangeTimeScale_Subscribe;
-    }
 
-    private void P_Event_OnChangeTimeScale_Subscribe(float fTimeScale)
-    {
-        _mapText[EText.Text_TimeScale].text = fTimeScale.ToString("F1");
+        HomeKeeperGameManager.instance.p_Event_OnAction.Subscribe += P_Event_OnAction_Subscribe;
     }
 
     /* protected - [abstract & virtual]         */
@@ -90,6 +87,32 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
     // ========================================================================== //
 
     #region Private
+
+    private void CurrentActivateButton(EButton eButtonName)
+    {
+        _mapButton[eButtonName].targetGraphic.color = _mapButton[eButtonName].colors.pressedColor;
+    }
+
+    private void DisableButton(UnityEngine.UI.Button pButton)
+    {
+        pButton.targetGraphic.color = pButton.colors.disabledColor;
+        pButton.enabled = false;
+    }
+
+    private void P_Event_OnChangeTimeScale_Subscribe(float fTimeScale)
+    {
+        _mapText[EText.Text_TimeScale].text = fTimeScale.ToString("F1");
+    }
+
+    private void P_Event_OnAction_Subscribe(GameObject pObjectTarget)
+    {
+        foreach (var pButton in _mapButton.Values)
+        {
+            pButton.targetGraphic.color = pButton.colors.normalColor;
+            pButton.enabled = true;
+        }
+    }
+
 
     #endregion Private
 }
