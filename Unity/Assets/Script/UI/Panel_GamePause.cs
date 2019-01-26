@@ -38,8 +38,18 @@ public class Panel_GamePause : CUGUIPanelBase, IUIObject_HasButton<Panel_GamePau
      * 외부 객체가 호출(For External class call)*/
 
     public void IUIObject_HasButton_OnClickButton(EButton eButtonName) {
-       
-        
+
+        switch (eButtonName) {
+        case EButton.Button_Exit:
+            break;
+        case EButton.Button_Restart:
+            break;
+        case EButton.Button_Resume:
+            HomeKeeperGameManager.instance.DoGame_Resume();
+            break;
+
+
+        }
 
         p_Event_OnClickButton.DoNotify(eButtonName);
     }
