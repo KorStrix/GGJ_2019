@@ -48,10 +48,10 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void DoLose_Jewel(Jewel pJewel)
     {
-        if (pJewel.bIsStolen)
+        if (pJewel.p_bIsStolen)
             return;
 
-        pJewel.bIsStolen = true;
+        pJewel.DoSet_Stolen(true);
         if (--_iJewelCount_Current == 0)
             DoGame_Fail();
     }

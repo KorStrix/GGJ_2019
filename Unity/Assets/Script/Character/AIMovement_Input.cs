@@ -66,16 +66,6 @@ public class AIMovement_Input : CObjectBase
         if (_pTransformTarget == null)
             return;
 
-        if (_listJewel.Count == 0)
-            return;
-
-        Spawner_Jewel pCurrentJewel = _listJewel[_iJewelIndex];
-        if (_pTransformTarget == pCurrentJewel.transform)
-        {
-            if (pCurrentJewel.p_pJewel.bIsStolen)
-                CalculateNextJewel();
-        }
-
         _pAIPath.destination = _pTransformTarget.position;
         _pCharacterMovement.DoMove(_pAIPath.desiredVelocity.normalized);
     }
@@ -92,8 +82,9 @@ public class AIMovement_Input : CObjectBase
         bool bIsNotFind_NextJewel = true;
         while (_iJewelIndex < _listJewel.Count)
         {
-            if (_listJewel[_iJewelIndex].p_pJewel.bIsStolen == false)
+            if (_listJewel[_iJewelIndex].p_pJewel.p_bIsStolen == false)
             {
+                _listJewel[_iJewelIndex].p_pJewel.p_Event_OnStolen.Subscribe += CalculateNextJewel;
                 DoSetTarget(_listJewel[_iJewelIndex++].transform);
                 bIsNotFind_NextJewel = false;
                 break;
