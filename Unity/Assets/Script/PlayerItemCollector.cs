@@ -30,8 +30,19 @@ public class PlayerItemCollector : MonoBehaviour {
         Weapon pWeapon = CManagerPooling_InResources<string, Weapon>.instance.DoPop(strResourceName);
         pWeapon.transform.SetParent(transform);
         pWeapon.transform.localPosition = Vector3.zero;
-
+        EventOnGetWeapon(pWeapon);
+        WeaponHeld = pWeapon;
         return pWeapon;
+    }
+
+    public Armor DoEquipArmor(string strResourceName) {
+        CManagerPooling_InResources<string, Armor>.instance.p_strResourcesPath = "Armor/";
+        Armor pArmor = CManagerPooling_InResources<string, Armor>.instance.DoPop(strResourceName);
+        pArmor.transform.SetParent(transform);
+        pArmor.transform.localPosition = Vector3.zero;
+        EventOnGetArmor(pArmor);
+        ArmorHeld = pArmor;
+        return pArmor;
     }
 
     // Use this for initialization
