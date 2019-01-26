@@ -43,7 +43,9 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     [GetComponentInChildren("CurrentTarget")]
     Transform _pTransform_CurrentTarget = null;
 
+    PlayerInput _pPlayerInput;
     CManagerTimeScale _pManagerTimeScale;
+
     int _iJewelCount_Total;
     int _iJewelCount_Current;
     bool isPaused;
@@ -73,12 +75,16 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     {
         p_Event_OnGameState.DoNotify(EGameState.Victory);
     }
-    public void DoGame_Pause() {
+
+    public void DoGame_Pause()
+    {
         timescaleBeforePaused = _pManagerTimeScale.p_fCurrentTimeScale;
         _pManagerTimeScale.DoSetTimeScale(0);
         p_Event_OnGameState.DoNotify(EGameState.Pause);
     }
-    public void DoGame_Resume() {
+
+    public void DoGame_Resume()
+    {
         _pManagerTimeScale.DoSetTimeScale(timescaleBeforePaused);
         p_Event_OnGameState.DoNotify(EGameState.Resume);
     }
@@ -86,11 +92,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     public void DoGame_Fail()
     {
         p_Event_OnGameState.DoNotify(EGameState.Fail);
-    }
-
-    public void DoRecoveryTime()
-    {
-        _pManagerTimeScale.DoSetTimeScale_Fade(1f, 1f);
     }
 
     public void Event_OnAction(GameObject pObject)
@@ -104,6 +105,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
             _pTransform_CurrentTarget.DoResetTransform();
 
             _pTransform_CurrentTarget.GetComponent<CTweenRotation>()?.DoPlayTween_Forward();
+
+            _pPlayerInput.p_pCharacterModel.DoStartAI();
         }
     }
 
@@ -140,8 +143,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     {
         yield return null;
 
-        PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
-        pPlayerInput.p_pCharacterMovement.p_Event_OnMovePlayer.Subscribe += P_Event_OnMovePlayer_Subscribe;
+        _pPlayerInput = FindObjectOfType<PlayerInput>();
+        _pPlayerInput.p_pCharacterMovement.p_Event_OnMovePlayer.Subscribe += P_Event_OnMovePlayer_Subscribe;
     }
 
     public override void OnUpdate()
@@ -170,9 +173,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
             DoGame_Fail();
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-            DoRecoveryTime();
     }
 
     /* protected - [abstract & virtual]         */
@@ -186,19 +186,19 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     {
         yield return null;
 
-        PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
-        Vector3 vecPlayerPos = pPlayerInput.transform.position;
+        _pPlayerInput = FindObjectOfType<PlayerInput>();
+        Vector3 vecPlayerPos = _pPlayerInput.transform.position;
         vecPlayerPos.y = 10f;
 
         CFollowObject pObjectFollow = FindObjectOfType<CFollowObject>();
         if(pObjectFollow != null)
         {
             pObjectFollow.transform.position = vecPlayerPos;
-            pObjectFollow.DoInitTarget(pPlayerInput.transform);
+            pObjectFollow.DoInitTarget(_pPlayerInput.transform);
             pObjectFollow.DoSetFollow(true);
         }
 
-        CharacterModel pCharacterModel = pPlayerInput.GetComponent<CharacterModel>();
+        CharacterModel pCharacterModel = _pPlayerInput.p_pCharacterModel;
         pCharacterModel.EventOnAwake();
         pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
 

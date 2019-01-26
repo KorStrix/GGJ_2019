@@ -72,7 +72,7 @@ public class Spawner_Character : CObjectBase
         for (int i = 0; i < listJewel.Count; i++)
             listJewel[i].EventOnAwake();
 
-        AIMovement_Input pAIMovementInput = transform.GetChild(0).GetComponent<AIMovement_Input>();
+        AIInput pAIMovementInput = transform.GetChild(0).GetComponent<AIInput>();
         if (pAIMovementInput != null)
             pAIMovementInput.DoInitJewelList(listJewel);
 

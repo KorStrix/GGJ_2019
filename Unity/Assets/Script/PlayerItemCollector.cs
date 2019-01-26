@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerItemCollector : MonoBehaviour {
+public class PlayerItemCollector : CObjectBase {
 
 
     public delegate void OnGetWeapon(Weapon newWeapon);
@@ -29,9 +29,16 @@ public class PlayerItemCollector : MonoBehaviour {
         pWeapon.transform.SetParent(transform);
         pWeapon.transform.localPosition = Vector3.zero;
 
+        return pWeapon;
+    }
+
+    protected override void OnAwake()
+    {
+        base.OnAwake();
+
         CharacterModel pCharacterModel = GetComponentInParent<CharacterModel>();
 
-        if(pCharacterModel == null)
+        if (pCharacterModel == null)
             Debug.LogError(name + "pCharacterModel == null");
         else
         {
@@ -39,15 +46,10 @@ public class PlayerItemCollector : MonoBehaviour {
             EventOnGetArmor += pCharacterModel.GetArmor;
         }
 
-        return pWeapon;
-    }
-
-    void Start()
-    {
         characterRigid = GetComponentInParent<Rigidbody>();
-
         fist = DoCreateAndEquipWeapon("Fist");
         WeaponHeld = fist;
+        EventOnGetWeapon(fist);
     }
 
     /// <summary>

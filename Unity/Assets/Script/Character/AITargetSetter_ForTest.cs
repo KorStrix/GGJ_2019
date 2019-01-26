@@ -13,7 +13,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 
 /// </summary>
-[RequireComponent(typeof(AIMovement_Input))]
+[RequireComponent(typeof(AIInput))]
 public class AITargetSetter_ForTest : CObjectBase
 {
     /* const & readonly declaration             */
@@ -25,7 +25,7 @@ public class AITargetSetter_ForTest : CObjectBase
     /* protected & private - Field declaration         */
 
     [GetComponent]
-    AIMovement_Input _pAIMovementInput = null;
+    AIInput _pAIMovementInput = null;
 
     // ========================================================================== //
 
