@@ -36,7 +36,7 @@ public class PlayerInput : CObjectBase
 
         Vector3 vecDesireVelocity;
 
-        if (speedX != 0f && speedZ != 0f)
+        if (speedX != 0f || speedZ != 0f)
         {
             HomeKeeperGameManager.instance.Event_OnActionFinish();
             _pTransform_NavmeshTarget = null;
