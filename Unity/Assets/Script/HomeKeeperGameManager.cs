@@ -33,17 +33,23 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     public CObserverSubject<EGameState> p_Event_OnGameState { get; private set; } = new CObserverSubject<EGameState>();
     public CObserverSubject<GameObject> p_Event_OnAction { get; private set; } = new CObserverSubject<GameObject>();
 
+    public bool p_bIsWaitAction { get; private set; }
+    [GetComponentInChildren]
+    public Camera p_pInGameCamera { get; private set; }
+    [GetComponentInChildren]
+    public CTweenPosition_Radial p_pRadialPosition_Button { get; private set; }
+
     /* protected & private - Field declaration         */
 
     [GetComponentInChildren("CurrentTarget")]
     Transform _pTransform_CurrentTarget = null;
-    
+
     CManagerTimeScale _pManagerTimeScale;
-    bool _bIsWaitAction;
     int _iJewelCount_Total;
     int _iJewelCount_Current;
     bool isPaused;
     float timescaleBeforePaused;
+
     // ========================================================================== //
 
     /* public - [Do] Function
@@ -90,14 +96,14 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void Event_OnClickPlayerButton()
     {
-        _bIsWaitAction = true;
+        p_bIsWaitAction = true;
     }
 
     public void Event_OnAction(GameObject pObject)
     {
-        if (_bIsWaitAction && pObject != null)
+        if (p_bIsWaitAction && pObject != null)
         {
-            _bIsWaitAction = false;
+            p_bIsWaitAction = false;
             p_Event_OnAction.DoNotify(pObject);
 
             _pTransform_CurrentTarget.SetActive(true);
@@ -185,7 +191,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     IEnumerator CoGameStart()
     {
-        _bIsWaitAction = false;
+        p_bIsWaitAction = false;
 
         yield return null;
 

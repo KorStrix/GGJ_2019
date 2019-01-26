@@ -37,10 +37,11 @@ public class MouseClick_Player : CObjectBase, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        var tween = GetComponent<CTweenPosition_Radial>();
-        tween?.DoSetTarget(gameObject);
-        tween?.DoPlayTween_Forward();
-        
+        if (HomeKeeperGameManager.instance.p_bIsWaitAction)
+            return;
+
+        var pTweenButton = HomeKeeperGameManager.instance.p_pRadialPosition_Button;
+        pTweenButton.gameObject.SetActive(true);
     }
 
     /* protected - [abstract & virtual]         */
