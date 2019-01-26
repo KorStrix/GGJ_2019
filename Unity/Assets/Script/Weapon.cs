@@ -57,21 +57,11 @@ public class Weapon : CObjectBase {
         return Cooltime_Remain <= 0f && fDistance <= Range;
     }
 
-    public void DoFireWeapon()
+    public void DoFire_Weapon()
     {
         Cooltime_Remain = Cooltime;
-    }
 
-    public void DoEquipWeapon(bool bIsEquip)
-    {
-       
-       
-    }
-
-    {
-        base.OnAwake();
-
-     
+        CManagerSound.instance.DoPlaySoundEffect_OrNull(ShootClip);
     }
 
     public override void OnUpdate()
