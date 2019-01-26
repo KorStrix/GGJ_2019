@@ -10,6 +10,10 @@ public class Armor : MonoBehaviour {
     /// </summary>
     public string Name;
 
+    /// <summary>
+    /// UI용 스프라이트
+    /// </summary>
+    public Sprite UISprite;
 
     /// <summary>
     /// 방어구 타입
