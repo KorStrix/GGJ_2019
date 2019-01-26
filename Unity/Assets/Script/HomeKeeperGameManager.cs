@@ -24,6 +24,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         Start,
         Victory,
         Fail,
+        Pause,
+        Resume
     }
 
     /* public - Field declaration            */
@@ -40,7 +42,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     bool _bIsWaitAction;
     int _iJewelCount_Total;
     int _iJewelCount_Current;
-
+    bool isPaused;
+    float timescaleBeforePaused;
     // ========================================================================== //
 
     /* public - [Do] Function
@@ -64,6 +67,15 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     public void DoGame_Victory()
     {
         p_Event_OnGameState.DoNotify(EGameState.Victory);
+    }
+    public void DoGame_Pause() {
+        timescaleBeforePaused = _pManagerTimeScale.p_fCurrentTimeScale;
+        _pManagerTimeScale.DoSetTimeScale(0);
+        p_Event_OnGameState.DoNotify(EGameState.Pause);
+    }
+    public void DoGame_Resume() {
+        _pManagerTimeScale.DoSetTimeScale(timescaleBeforePaused);
+        p_Event_OnGameState.DoNotify(EGameState.Resume);
     }
 
     public void DoGame_Fail()
@@ -137,6 +149,17 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     {
         base.OnUpdate();
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+            if (!isPaused) {
+                DoGame_Pause();
+                isPaused = true;
+            } else {
+                DoGame_Resume();
+                isPaused = false;
+            }
+        
+        
+
         if (CheckDebugFilter(EDebugFilter.Debug_Level_App) == false)
             return;
 
@@ -194,6 +217,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     private void P_Event_OnMovePlayer_Subscribe(bool bMovement)
     {
+        if (isPaused) return;
         float fCurrentTimeScale = _pManagerTimeScale.p_fCurrentTimeScale;
         if (bMovement)
             _pManagerTimeScale.DoSetTimeScale(Mathf.Clamp(fCurrentTimeScale + Time.unscaledDeltaTime, 0.1f, 1f));

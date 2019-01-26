@@ -25,6 +25,7 @@ public class UIManager : CManagerUGUIBase<UIManager, UIManager.EUIPanel>
         Panel_GameStart,
         Panel_GameVictory,
         Panel_GameFail,
+        Panel_GamePause
     }
 
     /* public - Field declaration            */
@@ -81,6 +82,12 @@ public class UIManager : CManagerUGUIBase<UIManager, UIManager.EUIPanel>
 
             case HomeKeeperGameManager.EGameState.Fail:
                 DoShowHide_Panel(EUIPanel.Panel_GameFail, true);
+                break;
+            case HomeKeeperGameManager.EGameState.Pause:
+                DoShowHide_Panel(EUIPanel.Panel_GamePause, true);
+                break;
+            case HomeKeeperGameManager.EGameState.Resume:
+                DoShowHide_Panel(EUIPanel.Panel_GamePause, false);
                 break;
         }
     }
