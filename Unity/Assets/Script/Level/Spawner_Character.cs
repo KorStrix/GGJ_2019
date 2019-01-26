@@ -32,6 +32,8 @@ public class Spawner_Character : CObjectBase
     public List<Spawner_Jewel> listJewel = new List<Spawner_Jewel>();
 
     public ECharacterType p_eCharacterType;
+    public Weapon pWeapon_Equip;
+    public Armor pArmor_Equip;
 
     /* protected & private - Field declaration         */
 
@@ -74,6 +76,11 @@ public class Spawner_Character : CObjectBase
         if (pAIMovementInput != null)
             pAIMovementInput.DoInitJewelList(listJewel);
 
+        if (pWeapon_Equip != null)
+        {
+            PlayerItemCollector pCollector = transform.GetChild(0).GetComponentInChildren<PlayerItemCollector>();
+            pCollector.DoEquipWeapon(pWeapon_Equip.name);
+        }
     }
 
     // ========================================================================== //

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 public enum WeaponType { fist, melee, handgun, rifle}
-public class Weapon : MonoBehaviour {
+public class Weapon : CObjectBase {
     /// <summary>
     /// 무기의 이름
     /// </summary>
@@ -25,10 +25,6 @@ public class Weapon : MonoBehaviour {
     public float Range;
     
     /// <summary>
-    /// UI용 스프라이트
-    /// </summary>
-    public Sprite UISprite;
-    /// <summary>
     /// 무기의 쿨타임
     /// </summary>
     public float Cooltime;
@@ -45,8 +41,22 @@ public class Weapon : MonoBehaviour {
     /// </summary>
     public CEffect VisualEffect;
 
+
+    public Sprite p_pSprite_OnUI { get { return _pSprite_OnDropImage.sprite; } }
+
+    [GetComponentInChildren("ItemSprite")]
+    SpriteRenderer _pSprite_OnDropImage = null;
+    [GetComponentInChildren("HeldSprite")]
+    SpriteRenderer _pSprite_OnHeldSprite = null;
+
     public bool DoCheck_IsReadyToFire()
     {
         return Cooltime_Remain < 0f;
+    }
+
+    public void DoEquipWeapon(bool bIsEquip)
+    {
+        _pSprite_OnDropImage.SetActive(!bIsEquip);
+        _pSprite_OnHeldSprite.SetActive(bIsEquip);
     }
 }

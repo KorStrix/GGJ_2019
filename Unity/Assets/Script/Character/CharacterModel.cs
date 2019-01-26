@@ -57,6 +57,7 @@ public class CharacterModel : CObjectBase
         p_pWeapon_Equiped = pWeapon;
 
         pStat?.SetItemStat(pWeapon, null);
+        pWeapon?.DoEquipWeapon(true);
         //pStat.DoIncrease_Stat(pWeapon.effects);
 
         p_Event_OnChange_Weapon.DoNotify(pWeapon);

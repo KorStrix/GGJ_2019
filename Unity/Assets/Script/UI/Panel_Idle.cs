@@ -96,11 +96,10 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
     private void P_Event_OnChange_Weapon_Subscribe(Weapon pWeapon)
     {
-        Debug.Log(name + " 이미지 들어오면 작업해야함", this);
-        //if (pWeapon != null)
-        //    _mapImage[EImage.Image_Icon_Weapon].sprite = pWeapon.GetComponentInChildren<SpriteRenderer>().sprite;
-        //else
-        //    _mapImage[EImage.Image_Icon_Weapon].sprite = null;
+        if (pWeapon != null)
+            _mapImage[EImage.Image_Icon_Weapon].sprite = pWeapon.p_pSprite_OnUI;
+        else
+            _mapImage[EImage.Image_Icon_Weapon].sprite = null;
 
     }
 
