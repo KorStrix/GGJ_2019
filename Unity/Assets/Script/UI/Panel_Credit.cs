@@ -34,7 +34,10 @@ public class Panel_Credit : CUGUIPanelBase, IUIObject_HasButton<Panel_Credit.EUI
 
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
-
+    public void DoCloseCredit() {
+        TitleManager.instance.DoShowHide_Panel(TitleManager.EUIPanel.Panel_Credit, false);
+        TitleManager.instance.DoShowHide_Panel(TitleManager.EUIPanel.Panel_Title, true);
+    }
 
     // ========================================================================== //
 
@@ -45,8 +48,7 @@ public class Panel_Credit : CUGUIPanelBase, IUIObject_HasButton<Panel_Credit.EUI
         switch (eButtonName)
         {
             case EUIButton.Button_Exit:
-                TitleManager.instance.DoShowHide_Panel(TitleManager.EUIPanel.Panel_Credit, false);
-                TitleManager.instance.DoShowHide_Panel(TitleManager.EUIPanel.Panel_Title, true);
+                DoCloseCredit();
                 break;
 
             default:

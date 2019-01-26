@@ -19,6 +19,10 @@ public class Weapon : CObjectBase {
     /// </summary>
     public float Damage;
 
+    /// <summary>
+    /// 공격 시 이펙트
+    /// </summary>
+    public CEffect AttackEffect;
 
     /// <summary>
     /// 무기의 정확도
