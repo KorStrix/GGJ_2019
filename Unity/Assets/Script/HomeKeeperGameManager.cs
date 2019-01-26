@@ -46,8 +46,12 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    public void DoLose_Jewel()
+    public void DoLose_Jewel(Jewel pJewel)
     {
+        if (pJewel.bIsStolen)
+            return;
+
+        pJewel.bIsStolen = true;
         if (--_iJewelCount_Current == 0)
             DoGame_Fail();
     }
@@ -72,7 +76,10 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         _pManagerTimeScale.DoSetTimeScale_Fade(1f, 1f);
     }
 
-
+    public void Event_OnClickPlayerButton()
+    {
+        _bIsWaitAction = true;
+    }
 
     public void Event_OnAction(GameObject pObject)
     {
@@ -109,8 +116,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         {
             GameObject.Instantiate(Resources.Load("Prefab/UIRoot"));
         }
-
-        Panel_Idle.p_Event_OnClickButton.Subscribe += P_Event_OnClickButton_Subscribe;
     }
 
     protected override void OnEnableObject()
@@ -185,11 +190,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         }
 
         _iJewelCount_Current = _iJewelCount_Total;
-    }
-
-    private void P_Event_OnClickButton_Subscribe(Panel_Idle.EButton eButtonName)
-    {
-        _bIsWaitAction = true;
     }
 
     private void P_Event_OnMovePlayer_Subscribe(bool bMovement)

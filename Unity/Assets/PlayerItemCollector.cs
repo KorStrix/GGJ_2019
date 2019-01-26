@@ -84,7 +84,7 @@ public class PlayerItemCollector : MonoBehaviour {
             break;
         case "Jewel":
 
-            HomeKeeperGameManager.instance.DoLose_Jewel();
+            HomeKeeperGameManager.instance.DoLose_Jewel(other.GetComponentInChildren<Jewel>());
             Destroy(other.gameObject);
             break;
         }
