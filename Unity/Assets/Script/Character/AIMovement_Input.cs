@@ -135,7 +135,7 @@ public class AIMovement_Input : CObjectBase
 
             Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
             float fDistance = Vector3.Distance(transform.position, pTransformTarget.position);
-            if(_pCharacterModel.p_pWeapon_Equiped.DoCheck_IsReadyToFire(fDistance))
+            if (_pCharacterModel.p_pWeapon_Equiped.DoCheck_IsReadyToFire(fDistance) && Physics.Raycast(transform.position, pTransformTarget.position, _pCharacterModel.pTerrainLayer) == false)
             {
                 List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
                 for(int i = 0; i < listCollider.Count; i++)
@@ -166,26 +166,6 @@ public class AIMovement_Input : CObjectBase
         if (bIsNotFind_NextJewel)
         {
             HomeKeeperGameManager.instance.DoGame_Fail();
-
-            //Compo_ExitGate[] arrExitGates = FindObjectsOfType<Compo_ExitGate>();
-            //Vector3 vecTransformPos = transform.position;
-            //float fMinestDistance = float.MaxValue;
-            //Transform pTransform_Closest = null;
-
-            //for(int i = 0; i < arrExitGates.Length; i++)
-            //{
-            //    float fCurrentDistance = Vector3.Distance(vecTransformPos, arrExitGates[i].transform.position);
-            //    if(fCurrentDistance < fMinestDistance)
-            //    {
-            //        fMinestDistance = fCurrentDistance;
-            //        pTransform_Closest = arrExitGates[i].transform;
-            //    }
-            //}
-
-            //if (pTransform_Closest != null)
-            //    DoSetTarget(pTransform_Closest);
-            //else
-            //    Debug.LogError(name + "Not Found Closest Exit Gate", this);
         }
     }
 

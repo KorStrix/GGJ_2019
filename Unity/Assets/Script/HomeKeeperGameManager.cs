@@ -33,7 +33,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     public CObserverSubject<EGameState> p_Event_OnGameState { get; private set; } = new CObserverSubject<EGameState>();
     public CObserverSubject<GameObject> p_Event_OnAction { get; private set; } = new CObserverSubject<GameObject>();
 
-    public bool p_bIsWaitAction { get; private set; }
     [GetComponentInChildren]
     public Camera p_pInGameCamera { get; private set; }
     [GetComponentInChildren]
@@ -94,16 +93,10 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         _pManagerTimeScale.DoSetTimeScale_Fade(1f, 1f);
     }
 
-    public void Event_OnClickPlayerButton()
-    {
-        p_bIsWaitAction = true;
-    }
-
     public void Event_OnAction(GameObject pObject)
     {
-        if (p_bIsWaitAction && pObject != null)
+        if (pObject != null)
         {
-            p_bIsWaitAction = false;
             p_Event_OnAction.DoNotify(pObject);
 
             _pTransform_CurrentTarget.SetActive(true);
@@ -191,8 +184,6 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     IEnumerator CoGameStart()
     {
-        p_bIsWaitAction = false;
-
         yield return null;
 
         PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
