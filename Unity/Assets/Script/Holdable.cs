@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Holdable : MonoBehaviour {
-
+    
+    [SerializeField] float nonInteractTime = 1f;
+    
 	// Use this for initialization
 	void Start () {
 		
@@ -11,7 +13,7 @@ public class Holdable : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+       
 	}
 
     bool isHeld = false;
@@ -23,8 +25,8 @@ public class Holdable : MonoBehaviour {
     public void Attach(Transform character) {
         transform.parent = character;
         transform.localPosition = Vector3.zero;
-        GetComponent<Renderer>().SetActive(false);
-        GetComponent<Collider>().SetActive(false);
+        //GetComponent<SpriteRenderer>().SetActive(false);
+        GetComponent<SphereCollider>().SetActive(false);
         isHeld = true;
     }
 
@@ -33,8 +35,19 @@ public class Holdable : MonoBehaviour {
     /// </summary>
     public void Detach(Vector3 direction) {
         transform.SetParent(null, true);
+        
+        GetComponent<Rigidbody>().velocity = direction.normalized*1;
         isHeld = false;
-        GetComponent<Renderer>().SetActive(true);
-        GetComponent<Collider>().SetActive(true);
+        //GetComponent<SpriteRenderer>().SetActive(true);
+
+
+        StartCoroutine(WaitAfterDetached());
+    }
+
+    public IEnumerator WaitAfterDetached() {
+        yield return new WaitForSeconds(nonInteractTime);
+
+        gameObject.SetActive(true);
+        
     }
 }
