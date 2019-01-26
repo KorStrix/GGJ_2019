@@ -65,11 +65,9 @@ public class Weapon : CObjectBase {
     public void DoEquipWeapon(bool bIsEquip)
     {
        
-
        
     }
 
-    protected override void OnAwake()
     {
         base.OnAwake();
 

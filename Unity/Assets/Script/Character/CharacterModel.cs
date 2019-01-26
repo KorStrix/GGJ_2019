@@ -22,6 +22,8 @@ public class CharacterModel : CObjectBase
 
     public Stats pStat;
 
+    public LayerMask pTerrainLayer;
+
     Weapon _pWeapon_Hands = null;
     Armor _pArmor_Torso = null;
 
@@ -33,7 +35,7 @@ public class CharacterModel : CObjectBase
     public void DoAttack_Melee(GameObject pObjectTarget)
     {
         Weapon pWeaponCurrent = p_pWeapon_Equiped == null ? _pWeapon_Hands : p_pWeapon_Equiped;
-        pWeaponCurrent.DoFireWeapon();
+        pWeaponCurrent.DoFire_Weapon();
         p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnAttack);
 
         var target = pObjectTarget.GetComponent<CharacterModel>();
@@ -48,18 +50,12 @@ public class CharacterModel : CObjectBase
     public void GetWeapon(Weapon pWeapon)
     {
         p_pWeapon_Equiped = pWeapon;
-
-        pWeapon.DoEquipWeapon(true);
-        //pStat.DoIncrease_Stat(pWeapon.effects);
-
         p_Event_OnChange_Weapon.DoNotify(pWeapon);
     }
 
     public void GetArmor(Armor pArmor)
     {
         p_pArmor_Equiped = pArmor;
-        //pStat.DoIncrease_Stat(pArmor.effects);
-
         p_Event_OnChange_Armor.DoNotify(pArmor);
     }
 
