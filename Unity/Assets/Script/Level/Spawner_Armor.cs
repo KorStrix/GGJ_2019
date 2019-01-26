@@ -15,21 +15,23 @@ using Sirenix.OdinInspector;
 /// 
 /// </summary>
 [ExecuteInEditMode]
-public class Spawner_HealItem : CObjectBase
+public class Spawner_Armor : CObjectBase
 {
     /* const & readonly declaration             */
 
     /* enum & struct declaration                */
 
-    public enum EHealItemType
+    public enum EWeaponType
     {
-        Bandage,
-        Aid_Kit,
+       Baseball_Cap,
+       Body_Armor,
+       Combat_Helmet,
+       Leather_Jacket
     }
 
     /* public - Field declaration            */
 
-    public EHealItemType p_eHealItemType;
+    public EWeaponType p_eItemType;
 
     /* protected & private - Field declaration         */
 
@@ -39,8 +41,8 @@ public class Spawner_HealItem : CObjectBase
     /* public - [Do] Function
      * 외부 객체가 호출(For External class call)*/
 
-    [Button("DoSpawn_HealItem")]
-    public void DoSpawn_HealItem(bool bUpdateForce)
+    [Button("DoSpawn_Item")]
+    public void DoSpawn_Consumable(bool bUpdateForce)
     {
         while (transform.childCount > 1)
             DestroyImmediate(transform.GetChild(0).gameObject);
@@ -52,7 +54,7 @@ public class Spawner_HealItem : CObjectBase
             {
                 DestroyImmediate(pChildObject);
             }
-            else if(pChildObject.name.Contains(p_eHealItemType.ToString_GarbageSafe()))
+            else if(pChildObject.name.Contains(p_eItemType.ToString_GarbageSafe()))
             {
                 DestroyImmediate(pChildObject);
             }
@@ -60,7 +62,7 @@ public class Spawner_HealItem : CObjectBase
 
         if(transform.childCount == 0)
         {
-            GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Consumable/" + p_eHealItemType.ToString_GarbageSafe())) as GameObject;
+            GameObject pObjectPrefab = GameObject.Instantiate(Resources.Load("Armor/" + p_eItemType.ToString_GarbageSafe())) as GameObject;
             pObjectPrefab.transform.SetParent(transform);
             pObjectPrefab.transform.DoResetTransform();
         }
@@ -74,7 +76,7 @@ public class Spawner_HealItem : CObjectBase
     {
         base.OnAwake();
 
-        DoSpawn_HealItem(true);
+        DoSpawn_Consumable(true);
     }
 
 #if UNITY_EDITOR
@@ -83,7 +85,7 @@ public class Spawner_HealItem : CObjectBase
         if (Application.isPlaying)
             return;
 
-        DoSpawn_HealItem(false);
+        DoSpawn_Consumable(false);
     }
 #endif
 
