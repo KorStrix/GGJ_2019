@@ -108,13 +108,19 @@ public class CharacterModel : CObjectBase
         _pPhysicsTrigger.GetComponent<SphereCollider>().radius = pStat.fDetectArea;
         _pPhysicsTrigger.DoClear_InColliderList();
 
-        while (_pPhysicsTrigger.GetColliderList_3D_Stay().Count == 0)
+        while (_pPhysicsTrigger.GetColliderList_3D_Enter().Count == 0)
+        {
+            yield return null;
+        }
+
+        Transform pTransformTarget = _pPhysicsTrigger.GetColliderList_3D_Enter()[0].transform;
+        while (Physics.Raycast(transform.position, pTransformTarget.position, pTerrainLayer))
         {
             yield return null;
         }
 
         List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
-        p_Event_OnSetTarget.DoNotify(listCollider[0].gameObject);
+        p_Event_OnSetTarget.DoNotify(pTransformTarget.gameObject);
     }
 
 
