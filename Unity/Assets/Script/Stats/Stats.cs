@@ -17,5 +17,14 @@ public class Stats : ScriptableObject
     public void DoInit()
     {
         iHP = iHP_MAX;
+
+        p_Event_OnChangeStatus.DoNotify(this);
+    }
+
+    public void DoDamage(int iDamage)
+    {
+        iHP -= iDamage;
+
+        p_Event_OnChangeStatus.DoNotify(this);
     }
 }

@@ -207,6 +207,10 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
             pObjectFollow.DoSetFollow(true);
         }
 
+        CharacterModel pCharacterModel = pPlayerInput.GetComponent<CharacterModel>();
+        pCharacterModel.EventOnAwake();
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+
         AstarPath.active?.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
 
@@ -219,6 +223,14 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         }
 
         _iJewelCount_Current = _iJewelCount_Total;
+    }
+
+    private void P_Event_OnChangeStatus_Subscribe(Stats sStatus)
+    {
+        if(sStatus.iHP <= 0)
+        {
+            DoGame_Fail();
+        }
     }
 
     private void P_Event_OnMovePlayer_Subscribe(bool bMovement, Vector3 vecMove)

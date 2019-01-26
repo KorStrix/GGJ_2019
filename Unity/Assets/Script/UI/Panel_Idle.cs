@@ -78,9 +78,9 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
     /* protected - Override & Unity API         */
 
-    protected override IEnumerator OnAwakeCoroutine()
+    protected override IEnumerator OnEnableObjectCoroutine()
     {
-        yield return null;
+        yield return new WaitForSeconds(0.1f);
 
         CManagerTimeScale.instance.p_Event_OnChangeTimeScale.Subscribe += P_Event_OnChangeTimeScale_Subscribe;
 
@@ -89,7 +89,7 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
         CharacterModel pCharacterModel = pPlayerInput.GetComponent<CharacterModel>();
         pCharacterModel.EventOnAwake();
-        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe_And_Listen_CurrentData += P_Event_OnChangeStatus_Subscribe_And_Listen_CurrentData;
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
         pCharacterModel.p_Event_OnChange_Weapon.Subscribe += P_Event_OnChange_Weapon_Subscribe;
         pCharacterModel.p_Event_OnChange_Armor.Subscribe += P_Event_OnChange_Armor_Subscribe;
     }
@@ -112,8 +112,10 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         //    _mapImage[EImage.Image_Icon_Weapon].sprite = null;
     }
 
-    private void P_Event_OnChangeStatus_Subscribe_And_Listen_CurrentData(Stats sStats)
+    private void P_Event_OnChangeStatus_Subscribe(Stats sStats)
     {
+        _mapImage[EImage.Image_HP_Fill].fillAmount = (float)sStats.iHP / sStats.iHP_MAX;
+
         //DoEditText(EText.Text_Stat_S, sStats.finalStr.ToString());
         //DoEditText(EText.Text_Stat_D, sStats.finalDex.ToString());
         //DoEditText(EText.Text_Stat_L, sStats.finalLuk.ToString());

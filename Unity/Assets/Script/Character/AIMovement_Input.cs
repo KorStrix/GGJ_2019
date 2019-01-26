@@ -138,7 +138,8 @@ public class AIMovement_Input : CObjectBase
             if(_pCharacterModel.p_pWeapon_Equiped.DoCheck_IsReadyToFire(fDistance))
             {
                 List<Collider> listCollider = _pPhysicsTrigger.GetColliderList_3D_Enter();
-                _pCharacterModel.DoAttack_Melee(listCollider[0].gameObject);
+                for(int i = 0; i < listCollider.Count; i++)
+                    _pCharacterModel.DoAttack_Melee(listCollider[i].gameObject);
                 break;
             }
 

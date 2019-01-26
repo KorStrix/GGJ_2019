@@ -26,7 +26,7 @@ public class CharacterModel : CObjectBase
     Armor _pArmor_Torso = null;
 
     [GetComponentInChildren]
-    CAnimatorController _pAnimator = null;
+    CAnimatorController p_pAnimator = null;
 
     // -----------------------
 
@@ -34,31 +34,15 @@ public class CharacterModel : CObjectBase
     {
         Weapon pWeaponCurrent = p_pWeapon_Equiped == null ? _pWeapon_Hands : p_pWeapon_Equiped;
         pWeaponCurrent.DoFireWeapon();
-        _pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnAttack);
-        //pWeaponCurrent.DoFireWeapon();
+        p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnAttack);
 
         var target = pObjectTarget.GetComponent<CharacterModel>();
         if (target == null)
             return;
 
-        int damage = (int)pWeaponCurrent.Damage;
-        target.pStat.iHP -= damage;
-
-        target._pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
+        target.pStat.DoDamage((int)pWeaponCurrent.Damage);
+        target.p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
         target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit");
-        if (target.pStat.iHP <= 0f)
-        {
-            //Dead Event
-        }
-    }
-
-    public void DoAttack_Range(GameObject pObjectTarget)
-    {
-        Weapon pWeaponCurrent = p_pWeapon_Equiped_Ranged == null ? _pWeapon_Hands : p_pWeapon_Equiped_Ranged;
-        _pAnimator.DoPlayAnimation("Character_OnAttack");
-        //pWeaponCurrent.DoFireWeapon();
-
-        Debug.Log(name + " DoAttack_Range pObjectTarget : " + pObjectTarget.name);
     }
 
     public void GetWeapon(Weapon pWeapon)
