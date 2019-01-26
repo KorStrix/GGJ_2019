@@ -15,15 +15,15 @@ public class PlayerItemCollector : MonoBehaviour {
     public event OnGetJewel EventOnGetJewel;
     public event OnGetConsumable EventOnGetConsumable;
 
-    public Weapon WeaponHeld { get; private set; }
-    public Armor ArmorHeld { get; private set; }
-    public Jewel JewelHeld { get; private set; }
+    public Weapon WeaponHeld;
+    public Armor ArmorHeld;
+    public Jewel JewelHeld;
 
     Weapon fist;
     // Use this for initialization
     void Start () {
         fist = GetComponentInChildren<Weapon>();
-
+        WeaponHeld = fist;
         //Search for Character
         var ch = GetComponentInParent<CharacterModel>();
         if (ch != null)
