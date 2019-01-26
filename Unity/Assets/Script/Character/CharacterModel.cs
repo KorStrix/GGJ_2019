@@ -38,10 +38,14 @@ public class CharacterModel : CObjectBase
         //pWeaponCurrent.DoFireWeapon();
 
         var target = pObjectTarget.GetComponent<CharacterModel>();
+        if (target == null)
+            return;
+
         float damage = pStat.GetMeleeWeaponDamage(pWeaponCurrent.Damage);
         target.pStat.HP = Mathf.Clamp(CalcDamage(damage, pObjectTarget), 0f, pStat.finalHP);
 
         target._pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
+        target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit");
         if (target.pStat.HP <= 0f)
         {
             //Dead Event

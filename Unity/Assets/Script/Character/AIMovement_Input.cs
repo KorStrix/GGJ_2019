@@ -87,6 +87,9 @@ public class AIMovement_Input : CObjectBase
         if (_pTransformTarget == null)
             return;
 
+        if (_pCharacterModel.p_pWeapon_Equiped == null)
+            return;
+
         float fDistance = Vector3.Distance(transform.position, _pTransformTarget.position);
         if(fDistance > _pCharacterModel.p_pWeapon_Equiped.Range)
         {
