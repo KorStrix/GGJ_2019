@@ -37,10 +37,15 @@ public class MouseClick_Player : CObjectBase, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        var tween = GameObject.Find("RadialButton").GetComponent<CTweenPosition_Radial>();
-        tween?.DoSetTarget(gameObject);
-        tween?.DoPlayTween_Forward();
-        
+        Debug.Log(name + " OnPointerClick");
+
+        var pTweenButton = HomeKeeperGameManager.instance.p_pRadialPosition_Button;
+        pTweenButton.gameObject.SetActive(true);
+
+        pTweenButton.transform.SetParent(transform);
+        pTweenButton.transform.DoResetTransform();
+        pTweenButton.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        pTweenButton.DoPlayTween_Forward();
     }
 
     /* protected - [abstract & virtual]         */

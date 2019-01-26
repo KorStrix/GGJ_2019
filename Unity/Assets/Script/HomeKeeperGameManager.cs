@@ -31,11 +31,14 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     public CObserverSubject<EGameState> p_Event_OnGameState { get; private set; } = new CObserverSubject<EGameState>();
     public CObserverSubject<GameObject> p_Event_OnAction { get; private set; } = new CObserverSubject<GameObject>();
 
+    [GetComponentInChildren]
+    public CTweenPosition_Radial p_pRadialPosition_Button { get; private set; }
+
     /* protected & private - Field declaration         */
 
     [GetComponentInChildren("CurrentTarget")]
     Transform _pTransform_CurrentTarget = null;
-    
+
     CManagerTimeScale _pManagerTimeScale;
     bool _bIsWaitAction;
     int _iJewelCount_Total;
@@ -78,6 +81,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void Event_OnClickPlayerButton()
     {
+        Debug.Log("Event_OnClickPlayerButton");
+
         _bIsWaitAction = true;
     }
 
@@ -116,6 +121,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         {
             GameObject.Instantiate(Resources.Load("Prefab/UIRoot"));
         }
+
+        p_pRadialPosition_Button.SetActive(false);
     }
 
     protected override void OnEnableObject()
