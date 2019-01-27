@@ -203,7 +203,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
         CharacterModel pCharacterModel = _pPlayerInput.p_pCharacterModel;
         pCharacterModel.EventOnAwake();
-        pCharacterModel.p_pStat_Instance.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
 
         AstarPath.active?.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
