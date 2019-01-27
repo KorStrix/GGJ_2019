@@ -34,6 +34,10 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
 
         Image_Icon_Weapon,
         Image_Icon_Armor,
+
+        ImageFill_Stat_Damage,
+        ImageFill_Stat_Armor,
+        ImageFill_Stat_Hitrate,
         Image_Icon_Helmet,
     }
 
@@ -89,9 +93,9 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
         CharacterModel pCharacterModel = pPlayerInput.GetComponent<CharacterModel>();
         pCharacterModel.EventOnAwake();
-        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
-        pCharacterModel.p_Event_OnChange_Weapon.Subscribe += P_Event_OnChange_Weapon_Subscribe;
-        pCharacterModel.p_Event_OnChange_Armor.Subscribe += P_Event_OnChange_Armor_Subscribe;
+        pCharacterModel.p_pStat_Instance.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+        pCharacterModel.p_Event_OnChange_Weapon.Subscribe_And_Listen_CurrentData += P_Event_OnChange_Weapon_Subscribe;
+        pCharacterModel.p_Event_OnChange_Armor.Subscribe_And_Listen_CurrentData += P_Event_OnChange_Armor_Subscribe;
     }
 
     private void P_Event_OnChange_Weapon_Subscribe(Weapon pWeapon)
