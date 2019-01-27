@@ -6,6 +6,7 @@ public enum ECharacterAnimationName
 {
     Character_OnAttack,
     Character_OnHit,
+    Character_OnMove
 }
 
 public class CharacterModel : CObjectBase
