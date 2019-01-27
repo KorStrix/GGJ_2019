@@ -101,7 +101,7 @@ public class PlayerItemCollector : CObjectBase {
             EventOnGetWeapon(fist);
         }
     }
-    public void DropArmor() {
+    public void DoDropArmor() {
         ArmorHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
         ArmorHeld = null;
         EventOnGetArmor(null);

@@ -71,5 +71,7 @@ public class PlayerInput : CObjectBase
         p_pCharacterMovement.DoMove(vecDesireVelocity);
         if (Input.GetKey(KeyCode.F))
             p_pCollector.DoDropWeapon();
+        if (Input.GetKey(KeyCode.G))
+            p_pCollector.DoDropArmor();
     }
 }
