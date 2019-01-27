@@ -43,10 +43,7 @@ public class CharacterMovement : CObjectBase
         //Vector3 vecPos = _pTransform.position + new Vector3(fSpeedX, 0.0f, fSpeedZ);
         //_pRigidbody.MovePosition(vecPos);
 
-        if (_pCharacterModel.pStat == null)
-            return;
-
-        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.pStat.fSpeed * Time.deltaTime;
+        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.p_pStat_Instance.fSpeed * Time.deltaTime;
 
         bool bIsMove = vecDesireDirection.x != 0f || vecDesireDirection.z != 0f;
 
