@@ -15,7 +15,9 @@ public class Holdable : CObjectBase {
     const float SPEEDSCALE = 3f;
 
     [GetComponentInChildren("mask")] Renderer Itemform;
-    
+    [GetComponentInChildren("ItemSprite")] Renderer Itemform2;
+    [GetComponentInChildren("HeldSprite")] Renderer Heldform;
+
     // Use this for initialization
     void Start () {
 		
@@ -39,7 +41,9 @@ public class Holdable : CObjectBase {
         transform.localPosition = Vector3.zero;
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         Itemform.enabled = false;
-        foreach(var c in GetComponents<Collider>())c.enabled = false;
+        Itemform2.enabled = false;
+        Heldform.enabled = true;
+        foreach (var c in GetComponents<Collider>())c.enabled = false;
         isHeld = true;
     }
 
@@ -54,8 +58,9 @@ public class Holdable : CObjectBase {
         GetComponent<Rigidbody>().velocity = speed*SPEEDSCALE;
         isHeld = false;
         Itemform.enabled = true;
+        Itemform2.enabled = true;
+        Heldform.enabled = false;
 
-        
         StartCoroutine(WaitAfterDetached());
         
     }
