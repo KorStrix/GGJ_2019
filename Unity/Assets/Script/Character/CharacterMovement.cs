@@ -51,11 +51,19 @@ public class CharacterMovement : CObjectBase
         bool bIsMove = vecDesireDirection.x != 0f || vecDesireDirection.z != 0f;
 
         if(bIsMove && _pAnimatorController.DoCheckIsPlaying(ECharacterAnimationName.Character_OnMove) == false)
-            _pAnimatorController.DoPlayAnimation("Character_OnMove");
+        {
+            _pAnimatorController.DoPlayAnimation(nameof(ECharacterAnimationName.Character_OnMove), PlayWalkSound);
+        }
         else if(bIsMove == false && _pAnimatorController.DoCheckIsPlaying(ECharacterAnimationName.Character_OnMove))
-            _pAnimatorController.DoPlayAnimation("Character_OnMove");
+            _pAnimatorController.DoPlayAnimation(nameof(ECharacterAnimationName.Character_OnMove));
 
         p_Event_OnMovePlayer.DoNotify(bIsMove, vecDesireDirection);
+    }
+
+    private void PlayWalkSound(string strAnimationName, bool bIsInterrupted)
+    {
+        if(strAnimationName == nameof(ECharacterAnimationName.Character_OnMove))
+            CManagerSound.instance.DoPlaySoundEffect_OrNull("GGJ_Foley2");
     }
 
     public void DoLookAt(Vector3 vecDesireDirection)
