@@ -26,9 +26,6 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         Text_Stat_L,
 
         Text_TimeScale,
-
-        Text_Remain_JewelCount,
-        Text_ElapseTime,
     }
 
     public enum EImage
@@ -62,9 +59,6 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
     [GetComponentInChildren]
     Dictionary<EImage, UnityEngine.UI.Image> _mapImage = new Dictionary<EImage, UnityEngine.UI.Image>();
 
-    [GetComponentInChildren]
-    CTweenScale _pTweenScale_Timer = null;
-
     // ========================================================================== //
 
     /* public - [Do] Function
@@ -95,7 +89,6 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         CManagerTimeScale.instance.p_Event_OnChangeTimeScale.Subscribe += P_Event_OnChangeTimeScale_Subscribe;
 
         HomeKeeperGameManager.instance.p_Event_OnAction.Subscribe += P_Event_OnAction_Subscribe;
-        HomeKeeperGameManager.instance.p_Event_OnRemain_JewelCount.Subscribe_And_Listen_CurrentData += P_Event_OnRemain_JewelCount_Subscribe_And_Listen_CurrentData; ;
 
         PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
         CharacterModel pCharacterModel = pPlayerInput.GetComponent<CharacterModel>();
@@ -103,21 +96,6 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         pCharacterModel.p_pStat_Instance.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
         pCharacterModel.p_Event_OnChange_Weapon.Subscribe_And_Listen_CurrentData += P_Event_OnChange_Weapon_Subscribe;
         pCharacterModel.p_Event_OnChange_Armor.Subscribe_And_Listen_CurrentData += P_Event_OnChange_Armor_Subscribe;
-
-        pPlayerInput.p_pCharacterMovement.p_Event_OnMovePlayer.Subscribe += P_Event_OnMovePlayer_Subscribe;
-    }
-
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-
-        System.TimeSpan timeSpan = System.TimeSpan.FromSeconds(Time.time);
-        _mapText[EText.Text_ElapseTime].text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
-    }
-
-    private void P_Event_OnRemain_JewelCount_Subscribe_And_Listen_CurrentData(int iMaxJewelCount, int iRemainJewelCount)
-    {
-        _mapText[EText.Text_Remain_JewelCount].text = string.Format("{0}/{1}", iRemainJewelCount, iMaxJewelCount);
     }
 
     private void P_Event_OnChange_Weapon_Subscribe(Weapon pWeapon)
@@ -164,21 +142,6 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
     {
         pButton.targetGraphic.color = pButton.colors.disabledColor;
         pButton.enabled = false;
-    }
-
-
-
-    private void P_Event_OnMovePlayer_Subscribe(bool bIsMove, Vector3 arg2)
-    {
-        if(bIsMove && _pTweenScale_Timer.p_bIsPlayingTween)
-        {
-            _pTweenScale_Timer.DoSeekTweening(0f);
-            _pTweenScale_Timer.DoStopTween();
-        }
-        else if (_pTweenScale_Timer.p_bIsPlayingTween == false)
-        {
-            _pTweenScale_Timer.DoPlayTween_Forward();
-        }
     }
 
     private void P_Event_OnChangeTimeScale_Subscribe(float fTimeScale)

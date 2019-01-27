@@ -12,6 +12,7 @@ public enum ECharacterAnimationName
 public class CharacterModel : CObjectBase
 {
     public CObserverSubject<Weapon> p_Event_OnChange_Weapon { get; private set; } = new CObserverSubject<Weapon>();
+    public CObserverSubject<Weapon> p_Event_OnChange_Weapon_Ranged { get; private set; } = new CObserverSubject<Weapon>();
     public CObserverSubject<Armor> p_Event_OnChange_Armor { get; private set; } = new CObserverSubject<Armor>();
 
     public CObserverSubject<GameObject> p_Event_OnSetTarget { get; private set; } = new CObserverSubject<GameObject>();
