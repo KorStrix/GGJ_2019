@@ -93,7 +93,7 @@ public class PlayerItemCollector : CObjectBase {
 
         
     }
-    public void DropWeapon() {
+    public void DoDropWeapon() {
         if (WeaponHeld == fist) return;
         else {
             WeaponHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
