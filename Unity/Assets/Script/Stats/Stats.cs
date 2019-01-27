@@ -14,11 +14,11 @@ public class Stats : ScriptableObject
     public float fDetectArea;
     public float fSpeed;
 
-    public void DoInit()
+    public Stats DoInit()
     {
         iHP = iHP_MAX;
 
-        p_Event_OnChangeStatus.DoNotify(this);
+        return ScriptableObject.Instantiate(this);
     }
 
     public void DoDamage(int iDamage)
