@@ -42,12 +42,14 @@ public class Regist_HPBar : CObjectBase
         while (UIManager.instance == null)
             yield return null;
 
+        yield return null;
+
         _pHealthBar = UIManager.instance.GetHealthBar();
         _pHealthBar.transform.SetParent(transform);
         _pHealthBar.transform.DoResetTransform();
 
         CharacterModel pCharacterModel = GetComponentInParent<CharacterModel>();
-        pCharacterModel.p_pStat_Instance.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
     }
 
     protected override void OnDisableObject()

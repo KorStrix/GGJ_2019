@@ -107,6 +107,9 @@ public class CManagerPooling<Class_GetType> : CSingletonNotMonoBase<CManagerPool
 
     public void DoPush(Class_GetType pClassType)
     {
+        if (pClassType == null)
+            return;
+
         if (_mapAllInstance.ContainsKey(pClassType) == false)
             return;
 

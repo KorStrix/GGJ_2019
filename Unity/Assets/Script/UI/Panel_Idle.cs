@@ -9,6 +9,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// 
@@ -26,6 +27,8 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         Text_Stat_L,
 
         Text_TimeScale,
+        Text_ElapseTime,
+        Text_Remain_JewelCount,
     }
 
     public enum EImage
@@ -38,7 +41,6 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         ImageFill_Stat_Damage,
         ImageFill_Stat_Armor,
         ImageFill_Stat_Hitrate,
-        Image_Icon_Helmet,
     }
 
     public enum EButton
@@ -58,6 +60,9 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
     Dictionary<EButton, UnityEngine.UI.Button> _mapButton = new Dictionary<EButton, UnityEngine.UI.Button>();
     [GetComponentInChildren]
     Dictionary<EImage, UnityEngine.UI.Image> _mapImage = new Dictionary<EImage, UnityEngine.UI.Image>();
+
+    [GetComponentInChildren]
+    CTweenScale _pTweenScale_TimeIcon = null;
 
     // ========================================================================== //
 
@@ -89,32 +94,55 @@ public class Panel_Idle : CUGUIPanelBase, IUIObject_HasButton<Panel_Idle.EButton
         CManagerTimeScale.instance.p_Event_OnChangeTimeScale.Subscribe += P_Event_OnChangeTimeScale_Subscribe;
 
         HomeKeeperGameManager.instance.p_Event_OnAction.Subscribe += P_Event_OnAction_Subscribe;
+        HomeKeeperGameManager.instance.p_Event_OnChangeJewel.Subscribe_And_Listen_CurrentData += P_Event_OnChangeJewel_Subscribe;
 
         PlayerInput pPlayerInput = FindObjectOfType<PlayerInput>();
         CharacterModel pCharacterModel = pPlayerInput.GetComponent<CharacterModel>();
         pCharacterModel.EventOnAwake();
-        pCharacterModel.p_pStat_Instance.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
         pCharacterModel.p_Event_OnChange_Weapon.Subscribe_And_Listen_CurrentData += P_Event_OnChange_Weapon_Subscribe;
         pCharacterModel.p_Event_OnChange_Armor.Subscribe_And_Listen_CurrentData += P_Event_OnChange_Armor_Subscribe;
+
+        pPlayerInput.p_pCharacterMovement.p_Event_OnMovePlayer.Subscribe += P_Event_OnMovePlayer_Subscribe;
+    }
+
+    private void P_Event_OnChangeJewel_Subscribe(int arg1, int arg2)
+    {
+        _mapText[EText.Text_Remain_JewelCount].text = string.Format("{0}/{1}", arg2, arg1);
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        TimeSpan timeSpan = TimeSpan.FromSeconds(Time.time);
+        _mapText[EText.Text_ElapseTime].text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+    }
+
+    private void P_Event_OnMovePlayer_Subscribe(bool bIsMove, Vector3 arg2)
+    {
+        if(bIsMove && _pTweenScale_TimeIcon.p_bIsPlayingTween)
+        {
+            _pTweenScale_TimeIcon.DoStopTween();
+        }
+        else if(bIsMove == false && _pTweenScale_TimeIcon.p_bIsPlayingTween == false)
+        {
+            _pTweenScale_TimeIcon.DoPlayTween_Forward();
+        }
     }
 
     private void P_Event_OnChange_Weapon_Subscribe(Weapon pWeapon)
     {
-        Debug.Log(name + " 이미지 들어오면 작업해야함", this);
-
-        //if (pWeapon != null)
-        //    _mapImage[EImage.Image_Icon_Weapon].sprite = pWeapon.p_pSprite_OnUI;
-        //else
-        //    _mapImage[EImage.Image_Icon_Weapon].sprite = null;
+        _mapImage[EImage.Image_Icon_Weapon].SetActive(pWeapon != null && pWeapon.Type != WeaponType.fist);
+        if (pWeapon != null)
+            _mapImage[EImage.Image_Icon_Weapon].sprite = pWeapon.p_pSprite_OnUI;
     }
 
     private void P_Event_OnChange_Armor_Subscribe(Armor pArmor)
     {
-        Debug.Log(name + " 이미지 들어오면 작업해야함", this);
-        //if (pArmor != null)
-        //    _mapImage[EImage.Image_Icon_Weapon].sprite = pArmor.GetComponentInChildren<SpriteRenderer>().sprite;
-        //else
-        //    _mapImage[EImage.Image_Icon_Weapon].sprite = null;
+        _mapImage[EImage.Image_Icon_Armor].SetActive(pArmor != null);
+        if (pArmor != null)
+            _mapImage[EImage.Image_Icon_Armor].sprite = pArmor.p_pSprite_OnUI;
     }
 
     private void P_Event_OnChangeStatus_Subscribe(Stats sStats)

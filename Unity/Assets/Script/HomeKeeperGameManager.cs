@@ -32,6 +32,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public CObserverSubject<EGameState> p_Event_OnGameState { get; private set; } = new CObserverSubject<EGameState>();
     public CObserverSubject<GameObject> p_Event_OnAction { get; private set; } = new CObserverSubject<GameObject>();
+    public CObserverSubject<int, int> p_Event_OnChangeJewel { get; private set; } = new CObserverSubject<int, int>();
 
     [GetComponentInChildren]
     public Camera p_pInGameCamera { get; private set; }
@@ -64,6 +65,8 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         pJewel.DoSet_Stolen(true);
         if (--_iJewelCount_Current == 0)
             DoGame_Fail();
+
+        p_Event_OnChangeJewel.DoNotify(_iJewelCount_Total, _iJewelCount_Current);
     }
 
     public void DoGame_Start()
@@ -200,7 +203,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
         CharacterModel pCharacterModel = _pPlayerInput.p_pCharacterModel;
         pCharacterModel.EventOnAwake();
-        pCharacterModel.p_pStat_Instance.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
 
         AstarPath.active?.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
@@ -214,6 +217,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         }
 
         _iJewelCount_Current = _iJewelCount_Total;
+        p_Event_OnChangeJewel.DoNotify(_iJewelCount_Total, _iJewelCount_Current);
     }
 
     private void P_Event_OnChangeStatus_Subscribe(Stats sStatus)

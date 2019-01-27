@@ -21,12 +21,9 @@ public class CharacterModel : CObjectBase
 
     // -----------------------
 
-    public Stats p_pStat_Instance { get; private set; }
+    public Stats pStat;
 
     public LayerMask pTerrainLayer;
-
-    [SerializeField]
-    private Stats pStat;
 
     Weapon _pWeapon_Equiped;
     Weapon _pWeapon_Fist;
@@ -88,7 +85,7 @@ public class CharacterModel : CObjectBase
     {
         base.OnAwake();
 
-        p_pStat_Instance = pStat.DoInit();
+        pStat?.DoInit();
     }
 
     // ====================================================================
