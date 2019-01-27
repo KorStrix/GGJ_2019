@@ -50,11 +50,12 @@ public class PlayerInput : CObjectBase
 
         if (_pTransform_NavmeshTarget)
         {
+            p_pCharacterMovement.p_Event_OnMovePlayer.DoNotify(true, Vector3.zero);
+
             float fDistance = Vector3.Distance(transform.position, _pTransform_NavmeshTarget.position);
             if (p_pCharacterModel.GetCurrentWeapon().Range > fDistance)
             {
                 _pRigidbody.velocity = Vector3.zero;
-                p_pCharacterMovement.p_Event_OnMovePlayer.DoNotify(true, Vector3.zero);
                 return;
             }
 

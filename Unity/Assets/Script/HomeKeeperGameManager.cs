@@ -9,6 +9,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Pathfinding;
 
 /// <summary>
 /// 
@@ -39,7 +40,11 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
     [GetComponentInChildren]
     public CTweenPosition_Radial p_pRadialPosition_Button { get; private set; }
 
+    public AudioClip p_pAudioClip_BGM = null;
+
     /* protected & private - Field declaration         */
+
+    List<CharacterModel> _listCharacterModel = new List<CharacterModel>();
 
     [GetComponentInChildren("CurrentTarget")]
     Transform _pTransform_CurrentTarget = null;
@@ -194,7 +199,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
         vecPlayerPos.y = 10f;
 
         CFollowObject pObjectFollow = FindObjectOfType<CFollowObject>();
-        if(pObjectFollow != null)
+        if (pObjectFollow != null)
         {
             pObjectFollow.transform.position = vecPlayerPos;
             pObjectFollow.DoInitTarget(_pPlayerInput.transform);
@@ -203,14 +208,14 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
         CharacterModel pCharacterModel = _pPlayerInput.p_pCharacterModel;
         pCharacterModel.EventOnAwake();
-        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe_Player;
 
         AstarPath.active?.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
 
         Spawner_Jewel[] arrJewelSpawn = FindObjectsOfType<Spawner_Jewel>();
         _iJewelCount_Total = 0;
-        for(int i = 0; i < arrJewelSpawn.Length; i++)
+        for (int i = 0; i < arrJewelSpawn.Length; i++)
         {
             if (arrJewelSpawn[i].gameObject != null && arrJewelSpawn[i].gameObject.activeSelf)
                 _iJewelCount_Total++;
@@ -218,9 +223,58 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
         _iJewelCount_Current = _iJewelCount_Total;
         p_Event_OnChangeJewel.DoNotify(_iJewelCount_Total, _iJewelCount_Current);
+
+        PlayBGM();
+
+        _listCharacterModel.Clear();
+        Spawner_Character[] arrSpawnCharater = FindObjectsOfType<Spawner_Character>();
+        for (int i = 0; i < arrSpawnCharater.Length; i++)
+        {
+            Spawner_Character pSpawnCharacter = arrSpawnCharater[i];
+            if (pSpawnCharacter.p_eCharacterType == Spawner_Character.ECharacterType.Player)
+                continue;
+
+            pSpawnCharacter.p_pCharacter.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe_Enemy;
+            _listCharacterModel.Add(pSpawnCharacter.p_pCharacter);
+        }
     }
 
-    private void P_Event_OnChangeStatus_Subscribe(Stats sStatus)
+    private void PlayBGM()
+    {
+        CManagerSound.instance.DoPlayBGM(p_pAudioClip_BGM.name, PlayBGM);
+    }
+
+    private void P_Event_OnChangeStatus_Subscribe_Enemy(Stats pStat)
+    {
+        if(pStat.iHP <= 0)
+        {
+            Debug.Log("죽었다");
+            pStat.p_pCharacterModel_Owner.SetActive(false);
+            //pStat.p_pCharacterModel_Owner.p_pSprite_Renderer_CharacterModel.sprite = pStat.p_pCharacterModel_Owner.p_pSprite_OnDead;
+            //pStat.p_pCharacterModel_Owner.enabled = false;
+
+            //var pAIPath = pStat.p_pCharacterModel_Owner.GetComponent<AIPath>();
+            //if (pAIPath)
+            //    pAIPath.enabled = false;
+
+            //pStat.p_pCharacterModel_Owner.p_pSprite_Renderer_CharacterModel.enabled = false;
+        }
+
+        bool bIsClear = false;
+        for(int i = 0; i < _listCharacterModel.Count; i++)
+        {
+            if (_listCharacterModel[i].pStat.iHP > 0)
+            {
+                bIsClear = false;
+                break;
+            }
+        }
+
+        if (bIsClear)
+            DoGame_Victory();
+    }
+
+    private void P_Event_OnChangeStatus_Subscribe_Player(Stats sStatus)
     {
         if(sStatus.iHP <= 0)
         {

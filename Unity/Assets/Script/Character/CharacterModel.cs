@@ -19,15 +19,24 @@ public class CharacterModel : CObjectBase
 
     public Armor p_pArmor_Equiped { get; private set; }
 
+    [GetComponentInChildren("Model")]
+    public SpriteRenderer p_pSprite_Renderer_CharacterModel { get; private set; }
+
     // -----------------------
 
     public Stats pStat;
-
     public LayerMask pTargetLayer;
+
+    public Sprite p_pSprite_OnDead;
+
+    // -----------------------
 
     Weapon _pWeapon_Equiped;
     Weapon _pWeapon_Fist;
     Armor _pArmor_Torso = null;
+
+    [GetComponentInChildren]
+    PlayerItemCollector _pCollector = null;
 
     [GetComponentInChildren]
     CAnimatorController p_pAnimator = null;
@@ -39,7 +48,7 @@ public class CharacterModel : CObjectBase
     public void DoAttack_Melee(GameObject pObjectTarget)
     {
         Weapon pWeaponCurrent = GetCurrentWeapon();
-        pWeaponCurrent.DoFire_Weapon();
+        pWeaponCurrent.DoFire_Weapon((pObjectTarget.transform.position - transform.position).normalized);
         p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnAttack);
 
         var target = pObjectTarget.GetComponent<CharacterModel>();
@@ -48,7 +57,7 @@ public class CharacterModel : CObjectBase
 
         target.pStat.DoDamage((int)pWeaponCurrent.Damage);
         target.p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
-        target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit");
+        target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit", SendMessageOptions.DontRequireReceiver);
     }
 
     public Weapon GetCurrentWeapon()
@@ -85,11 +94,31 @@ public class CharacterModel : CObjectBase
     {
         base.OnAwake();
 
-        pStat?.DoInit();
+        pStat?.DoInit(this);
+
+        _pCollector.EventOnGetConsumable += _pCollector_EventOnGetConsumable;
     }
+
+    private void _pCollector_EventOnGetConsumable(Consumable consumable)
+    {
+        CalculateDeltaStat(consumable.Effects.deltaStats);
+    }
+
 
     // ====================================================================
 
+    private void CalculateDeltaStat(List<DeltaStat> listDeltaStat)
+    {
+        foreach (var pDeltaStat in listDeltaStat)
+        {
+            switch (pDeltaStat.type)
+            {
+                case HomeKeeperBuffType.HP_Recovery:
+                    pStat.DoRecovory(pDeltaStat.value);
+                    break;
+            }
+        }
+    }
     IEnumerator CoAILogic()
     {
         yield return null;

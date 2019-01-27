@@ -29,11 +29,15 @@ public class Spawner_Character : CObjectBase
 
     /* public - Field declaration            */
 
+    public CharacterModel p_pCharacter { get; private set; }
+
     public List<Spawner_Jewel> listJewel = new List<Spawner_Jewel>();
 
     public ECharacterType p_eCharacterType;
     public Weapon pWeapon_Equip;
     public Armor pArmor_Equip;
+
+    public Stats pStats;
 
     /* protected & private - Field declaration         */
 
@@ -80,6 +84,13 @@ public class Spawner_Character : CObjectBase
         {
             PlayerItemCollector pCollector = transform.GetChild(0).GetComponentInChildren<PlayerItemCollector>();
             pCollector.DoCreateAndEquipWeapon(pWeapon_Equip.name);
+        }
+
+        if(pStats != null)
+        {
+            p_pCharacter = transform.GetChild(0).GetComponent<CharacterModel>();
+            p_pCharacter.pStat = Stats.Instantiate(pStats);
+            p_pCharacter.pStat.DoInit(p_pCharacter);
         }
     }
 
