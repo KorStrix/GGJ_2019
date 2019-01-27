@@ -40,10 +40,10 @@ public class CharacterMovement : CObjectBase
         //Vector3 vecPos = _pTransform.position + new Vector3(fSpeedX, 0.0f, fSpeedZ);
         //_pRigidbody.MovePosition(vecPos);
 
-        if (_pCharacterModel.pStat == null)
+        if (_pCharacterModel.p_pStat_Instance == null)
             return;
 
-        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.pStat.fSpeed * Time.deltaTime;
+        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.p_pStat_Instance.fSpeed * Time.deltaTime;
         p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f, vecDesireDirection);
     }
 

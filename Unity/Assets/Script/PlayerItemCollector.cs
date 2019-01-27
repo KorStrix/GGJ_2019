@@ -24,6 +24,9 @@ public class PlayerItemCollector : CObjectBase {
 
     public Weapon DoCreateAndEquipWeapon(string strResourceName)
     {
+        if (Application.isPlaying == false)
+            return null;
+
         CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
         Weapon pWeapon = CManagerPooling_InResources<string, Weapon>.instance.DoPop(strResourceName);
         pWeapon.transform.SetParent(transform);

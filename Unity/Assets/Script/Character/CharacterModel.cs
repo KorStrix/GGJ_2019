@@ -18,9 +18,12 @@ public class CharacterModel : CObjectBase
 
     public Armor p_pArmor_Equiped { get; private set; }
 
+    public Stats p_pStat_Instance { get; private set; }
+
     // -----------------------
 
-    public Stats pStat;
+    [SerializeField]
+    private Stats pStat = null;
 
     public LayerMask pTerrainLayer;
 
@@ -45,7 +48,7 @@ public class CharacterModel : CObjectBase
         if (target == null)
             return;
 
-        target.pStat.DoDamage((int)pWeaponCurrent.Damage);
+        target.p_pStat_Instance.DoDamage((int)pWeaponCurrent.Damage);
         target.p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
         target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit");
     }
@@ -84,7 +87,7 @@ public class CharacterModel : CObjectBase
     {
         base.OnAwake();
 
-        pStat?.DoInit();
+        p_pStat_Instance = pStat.DoInit();
     }
 
     // ====================================================================

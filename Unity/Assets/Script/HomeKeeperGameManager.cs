@@ -9,6 +9,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 
@@ -91,7 +92,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     public void DoGame_Fail()
     {
-        p_Event_OnGameState.DoNotify(EGameState.Fail);
+        StartCoroutine(CoGameFail());
     }
 
     public void Event_OnAction(GameObject pObject)
@@ -182,6 +183,15 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
     #region Private
 
+    IEnumerator CoGameFail()
+    {
+        p_Event_OnGameState.DoNotify(EGameState.Fail);
+
+        yield return new WaitForSeconds(3f);
+
+        SceneManager.LoadScene(1);
+    }
+
     IEnumerator CoGameStart()
     {
         yield return null;
@@ -200,7 +210,7 @@ public class HomeKeeperGameManager : CSingletonDynamicMonoBase<HomeKeeperGameMan
 
         CharacterModel pCharacterModel = _pPlayerInput.p_pCharacterModel;
         pCharacterModel.EventOnAwake();
-        pCharacterModel.pStat.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
+        pCharacterModel.p_pStat_Instance.p_Event_OnChangeStatus.Subscribe += P_Event_OnChangeStatus_Subscribe;
 
         AstarPath.active?.Scan();
         p_Event_OnGameState.DoNotify(EGameState.Start);
