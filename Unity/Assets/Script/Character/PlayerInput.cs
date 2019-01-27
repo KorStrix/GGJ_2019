@@ -54,6 +54,7 @@ public class PlayerInput : CObjectBase
             if (p_pCharacterModel.GetCurrentWeapon().Range > fDistance)
             {
                 _pRigidbody.velocity = Vector3.zero;
+                p_pCharacterMovement.p_Event_OnMovePlayer.DoNotify(true, Vector3.zero);
                 return;
             }
 

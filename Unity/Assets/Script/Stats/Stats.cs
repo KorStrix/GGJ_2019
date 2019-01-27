@@ -23,7 +23,7 @@ public class Stats : ScriptableObject
 
     public void DoDamage(int iDamage)
     {
-        iHP -= iDamage;
+        iHP -= Mathf.Max(iArmor - iDamage, 1);
 
         p_Event_OnChangeStatus.DoNotify(this);
     }
