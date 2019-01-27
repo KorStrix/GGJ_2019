@@ -11,6 +11,8 @@ public class PlayerInput : CObjectBase
     public CharacterMovement p_pCharacterMovement { get; private set; }
     [GetComponent]
     public CharacterModel p_pCharacterModel { get; private set; }
+    [GetComponentInChildren]
+    public PlayerItemCollector p_pCollector { get; private set; }
     [GetComponent]
     AIPath _pNavmeshAgent = null;
     [GetComponent]
@@ -67,5 +69,9 @@ public class PlayerInput : CObjectBase
         }
 
         p_pCharacterMovement.DoMove(vecDesireVelocity);
+        if (Input.GetKey(KeyCode.F))
+            p_pCollector.DoDropWeapon();
+        if (Input.GetKey(KeyCode.G))
+            p_pCollector.DoDropArmor();
     }
 }

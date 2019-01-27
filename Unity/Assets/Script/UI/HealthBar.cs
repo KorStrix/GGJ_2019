@@ -37,7 +37,6 @@ public class HealthBar : CUIObjectBase
     public void DoEdit_HealthBar(float fRemainHP_0_1)
     {
         p_fRemainHP_0_1 = fRemainHP_0_1;
-        _pImage_Fill.fillAmount = fRemainHP_0_1;
     }
 
     // ========================================================================== //

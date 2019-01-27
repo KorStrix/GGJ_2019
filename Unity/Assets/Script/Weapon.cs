@@ -53,7 +53,7 @@ public class Weapon : CObjectBase {
     public AudioClip ShootClip;
 
 
-    public Sprite p_pSprite_OnUI { get { return _pSprite_OnDropImage != null ? _pSprite_OnDropImage.sprite : null; } }
+    public Sprite p_pSprite_OnUI { get { return _pSprite_OnDropImage.sprite; } }
 
     [GetComponentInChildren("ItemSprite")]public SpriteRenderer _pSprite_OnDropImage = null;
     //public SpriteRenderer _pSprite_OnHeldSprite = null;

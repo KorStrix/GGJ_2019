@@ -225,31 +225,27 @@ public class CManagerPooling<Class_GetType> : CSingletonNotMonoBase<CManagerPool
 
     private Class_GetType Get_UnusedObject(GameObject pObjectCopyTarget, int iID)
     {
-        Class_GetType pComponentUnUsed = null;
-
-        while(pComponentUnUsed == null)
+        Class_GetType pComponentUnUsed;
+        if (_mapUnUsed[iID].Count != 0)
         {
-            if (_mapUnUsed[iID].Count != 0)
-            {
-                int iIndexLast = _mapUnUsed[iID].Count - 1;
-                pComponentUnUsed = _mapUnUsed[iID][iIndexLast];
-                _mapUnUsed[iID].RemoveAt(iIndexLast);
-            }
-            else
-            {
-                GameObject pObjectUnUsed = Instantiate(pObjectCopyTarget.gameObject);
-                pObjectUnUsed.name = string.Format("{0}_{1}", pObjectCopyTarget.name, _mapUnUsed[iID].Count + _mapUsed[iID].Count);
-                pObjectUnUsed.transform.SetParent(transform);
+            int iIndexLast = _mapUnUsed[iID].Count - 1;
+            pComponentUnUsed = _mapUnUsed[iID][iIndexLast];
+            _mapUnUsed[iID].RemoveAt(iIndexLast);
+        }
+        else
+        {
+            GameObject pObjectUnUsed = Instantiate(pObjectCopyTarget.gameObject);
+            pObjectUnUsed.name = string.Format("{0}_{1}", pObjectCopyTarget.name, _mapUnUsed[iID].Count + _mapUsed[iID].Count);
+            pObjectUnUsed.transform.SetParent(transform);
 
-                CCompoEventTrigger_OnDisable pEventTrigger = pObjectUnUsed.AddComponent<CCompoEventTrigger_OnDisable>();
-                pEventTrigger.p_Event_OnDestroy += Event_RemovePoolObject;
+            CCompoEventTrigger_OnDisable pEventTrigger = pObjectUnUsed.AddComponent<CCompoEventTrigger_OnDisable>();
+            pEventTrigger.p_Event_OnDestroy += Event_RemovePoolObject;
 
-                pComponentUnUsed = pObjectUnUsed.GetComponent<Class_GetType>();
-                if (pComponentUnUsed == null)
-                    Debug.LogError(name + " 풀링 매니져 에러 - pComponentNew == null, Origin Object : " + pObjectCopyTarget.name, pObjectCopyTarget);
+            pComponentUnUsed = pObjectUnUsed.GetComponent<Class_GetType>();
+            if(pComponentUnUsed == null)
+                Debug.LogError(name + " 풀링 매니져 에러 - pComponentNew == null, Origin Object : " + pObjectCopyTarget.name, pObjectCopyTarget);
 
-                _mapAllInstance.Add(pComponentUnUsed, iID);
-            }
+            _mapAllInstance.Add(pComponentUnUsed, iID);
         }
 
         _mapUsed[iID].Add(pComponentUnUsed);

@@ -24,9 +24,6 @@ public class PlayerItemCollector : CObjectBase {
 
     public Weapon DoCreateAndEquipWeapon(string strResourceName)
     {
-        if (Application.isPlaying == false)
-            return null;
-
         CManagerPooling_InResources<string, Weapon>.instance.p_strResourcesPath = "Weapon/";
         Weapon pWeapon = CManagerPooling_InResources<string, Weapon>.instance.DoPop(strResourceName);
         pWeapon.transform.SetParent(transform);
@@ -96,7 +93,7 @@ public class PlayerItemCollector : CObjectBase {
 
         
     }
-    public void DropWeapon() {
+    public void DoDropWeapon() {
         if (WeaponHeld == fist) return;
         else {
             WeaponHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
@@ -104,7 +101,7 @@ public class PlayerItemCollector : CObjectBase {
             EventOnGetWeapon(fist);
         }
     }
-    public void DropArmor() {
+    public void DoDropArmor() {
         ArmorHeld.GetComponent<Holdable>().Detach(characterRigid.velocity);
         ArmorHeld = null;
         EventOnGetArmor(null);

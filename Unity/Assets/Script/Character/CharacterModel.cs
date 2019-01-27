@@ -6,6 +6,7 @@ public enum ECharacterAnimationName
 {
     Character_OnAttack,
     Character_OnHit,
+    Character_OnMove
 }
 
 public class CharacterModel : CObjectBase
@@ -17,12 +18,9 @@ public class CharacterModel : CObjectBase
 
     public Armor p_pArmor_Equiped { get; private set; }
 
-    public Stats p_pStat_Instance { get; private set; }
-
     // -----------------------
 
-    [SerializeField]
-    private Stats pStat = null;
+    public Stats pStat;
 
     public LayerMask pTerrainLayer;
 
@@ -47,7 +45,7 @@ public class CharacterModel : CObjectBase
         if (target == null)
             return;
 
-        target.p_pStat_Instance.DoDamage((int)pWeaponCurrent.Damage);
+        target.pStat.DoDamage((int)pWeaponCurrent.Damage);
         target.p_pAnimator.DoPlayAnimation(ECharacterAnimationName.Character_OnHit);
         target.SendMessage(nameof(IResourceEventListener.IResourceEventListener_Excute), "OnHit");
     }
@@ -86,7 +84,7 @@ public class CharacterModel : CObjectBase
     {
         base.OnAwake();
 
-        p_pStat_Instance = pStat.DoInit();
+        pStat?.DoInit();
     }
 
     // ====================================================================

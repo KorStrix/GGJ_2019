@@ -259,12 +259,6 @@ public class CSoundSlot : CObjectBase
 
 	private IEnumerator CoPlaySoundEffect()
     {
-        if(_pAudioClip ==null)
-        {
-            Debug.Log(name + " CoPlaySoundEffect Audio Clip == null", this);
-            yield break;
-        }
-
         _pAudioSource.clip = _pAudioClip;
         _pAudioSource.volume = _fVolume;
 

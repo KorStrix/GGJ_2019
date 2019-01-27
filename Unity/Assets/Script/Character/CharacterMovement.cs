@@ -29,6 +29,9 @@ public class CharacterMovement : CObjectBase
     CharacterModel _pCharacterModel = null;
     [GetComponent]
     Rigidbody _pRigidbody = null;
+    [GetComponentInChildren]
+    CAnimatorController _pAnimatorController = null;
+
 
     // ========================================================================== //
 
@@ -40,11 +43,19 @@ public class CharacterMovement : CObjectBase
         //Vector3 vecPos = _pTransform.position + new Vector3(fSpeedX, 0.0f, fSpeedZ);
         //_pRigidbody.MovePosition(vecPos);
 
-        if (_pCharacterModel.p_pStat_Instance == null)
+        if (_pCharacterModel.pStat == null)
             return;
 
-        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.p_pStat_Instance.fSpeed * Time.deltaTime;
-        p_Event_OnMovePlayer.DoNotify(vecDesireDirection.x != 0f || vecDesireDirection.z != 0f, vecDesireDirection);
+        _pRigidbody.velocity = vecDesireDirection * _pCharacterModel.pStat.fSpeed * Time.deltaTime;
+
+        bool bIsMove = vecDesireDirection.x != 0f || vecDesireDirection.z != 0f;
+
+        if(bIsMove && _pAnimatorController.DoCheckIsPlaying(ECharacterAnimationName.Character_OnMove) == false)
+            _pAnimatorController.DoPlayAnimation("Character_OnMove");
+        else if(bIsMove == false && _pAnimatorController.DoCheckIsPlaying(ECharacterAnimationName.Character_OnMove))
+            _pAnimatorController.DoPlayAnimation("Character_OnMove");
+
+        p_Event_OnMovePlayer.DoNotify(bIsMove, vecDesireDirection);
     }
 
     public void DoLookAt(Vector3 vecDesireDirection)
