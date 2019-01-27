@@ -72,6 +72,6 @@ public class PlayerInput : CObjectBase
         if (Input.GetKey(KeyCode.F))
             p_pCollector.DoDropWeapon();
         if (Input.GetKey(KeyCode.G))
-            p_pCollector.DoDropArmor();
+            p_pCollector.DropArmor();
     }
 }
