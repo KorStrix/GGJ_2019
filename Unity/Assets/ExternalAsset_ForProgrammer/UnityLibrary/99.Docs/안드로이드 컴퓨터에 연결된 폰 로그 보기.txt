@@ -1,4 +1,0 @@
-�ȵ����̵� SDK ���� // platform-tools ���� cmd�� �� ��
-
-adb logcat -s Unity
-�Է�
